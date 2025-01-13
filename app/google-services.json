@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "92061185863",
+    "firebase_url": "https://my-home-2e254-default-rtdb.firebaseio.com",
+    "project_id": "my-home-2e254",
+    "storage_bucket": "my-home-2e254.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:92061185863:android:4f944d93943c84df9e7e62",
+        "android_client_info": {
+          "package_name": "com.example.dannysim"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD9T0owJyQe7neGlIaDeQspXO3Ve11s13o"
+        },
+        {
+          "current_key": "AIzaSyDvrWtnNUUhD425fmnroMY5BmvKpUZ2prM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:92061185863:android:68a483ebb1a18f9d9e7e62",
+        "android_client_info": {
+          "package_name": "com.example.myhome"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD9T0owJyQe7neGlIaDeQspXO3Ve11s13o"
+        },
+        {
+          "current_key": "AIzaSyDvrWtnNUUhD425fmnroMY5BmvKpUZ2prM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
