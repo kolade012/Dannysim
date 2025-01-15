@@ -1,24 +1,25 @@
 package com.example.dannysim.models;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 public class Entry implements Serializable {
+
     private String id;
     private String date;
-    private String controlNumber;
+    private int controlNumber;
     private String entryType;
     private String driver;
     private long createdAt;
     private int month;
-    private Map<String, Map<String, Object>> products;
+    private List<Product> products; // Use List<Product> for products
 
-    // Required empty constructor for Firebase
-    public Entry(String entryId, String entryDate, String productName, int controlNum, int soldQuantity, String entryType) {}
+    // Required empty constructor for Firebase (if needed)
+    public Entry(String entryId, String entryDate, int controlNum, String entryType, String driver, Long createdAtLong, List<Product> productList) {
+    }
 
     // Constructor for creating entries from Firebase data
-    public Entry(String id, String date, String controlNumber, String entryType,
+    public Entry(String id, String date, int controlNumber, String entryType,
                  String driver, long createdAt, int month) {
         this.id = id;
         this.date = date;
@@ -27,11 +28,11 @@ public class Entry implements Serializable {
         this.driver = driver;
         this.createdAt = createdAt;
         this.month = month;
-        this.products = new HashMap<>();
+        this.products = java.util.Collections.emptyList(); // Initialize empty list
     }
 
-    // Constructor for list display
-    public Entry(String id, String date, String controlNumber, String entryType,
+    // Constructor for list display (if needed)
+    public Entry(String id, String date, int controlNumber, String entryType,
                  String driver, int createdAt) {
         this.id = id;
         this.date = date;
@@ -39,31 +40,28 @@ public class Entry implements Serializable {
         this.entryType = entryType;
         this.driver = driver;
         this.createdAt = createdAt;
-        this.products = new HashMap<>();
+        this.products = java.util.Collections.emptyList(); // Initialize empty list
     }
 
     // Add a product to the entry
-    public void addProduct(String index, String productName, int inQuantity, int outQuantity, int soldQuantity) {
-        Map<String, Object> productMap = new HashMap<>();
-        productMap.put("product", productName);
-        productMap.put("in", inQuantity);
-        productMap.put("out", outQuantity);
-        productMap.put("sold", soldQuantity);
-        this.products.put(index, productMap);
+    public void addProduct(Product product) {
+        if (products != null) {
+            products.add(product);
+        }
     }
 
     // Get a specific product's details
-    public Map<String, Object> getProduct(String index) {
-        return products.get(index);
+    public Product getProduct(int index) {
+        if (products != null && index >= 0 && index < products.size()) {
+            return products.get(index);
+        }
+        return null;
     }
 
     // Get the first product name (for list display)
     public String getFirstProductName() {
         if (products != null && !products.isEmpty()) {
-            Map<String, Object> firstProduct = products.get("0");
-            if (firstProduct != null) {
-                return (String) firstProduct.get("product");
-            }
+            return products.get(0).getName();
         }
         return "N/A";
     }
@@ -71,15 +69,7 @@ public class Entry implements Serializable {
     // Get the first product's sold quantity (for list display)
     public int getFirstProductSoldQuantity() {
         if (products != null && !products.isEmpty()) {
-            Map<String, Object> firstProduct = products.get("0");
-            if (firstProduct != null) {
-                Object soldObj = firstProduct.get("sold");
-                if (soldObj instanceof Long) {
-                    return ((Long) soldObj).intValue();
-                } else if (soldObj instanceof Integer) {
-                    return (Integer) soldObj;
-                }
-            }
+            return products.get(0).getSoldQuantity();
         }
         return 0;
     }
@@ -101,11 +91,11 @@ public class Entry implements Serializable {
         this.date = date;
     }
 
-    public String getControlNumber() {
+    public int getControlNumber() {
         return controlNumber;
     }
 
-    public void setControlNumber(String controlNumber) {
+    public void setControlNumber(int controlNumber) {
         this.controlNumber = controlNumber;
     }
 
@@ -141,11 +131,11 @@ public class Entry implements Serializable {
         this.month = month;
     }
 
-    public Map<String, Map<String, Object>> getProducts() {
+    public List<Product> getProducts() {
         return products;
     }
 
-    public void setProducts(Map<String, Map<String, Object>> products) {
+    public void setProducts(List<Product> products) {
         this.products = products;
     }
 }

@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dannysim.adapters.EntriesAdapter;
 import com.example.dannysim.models.Entry;
+import com.example.dannysim.models.Product;
 import com.example.dannysim.models.User;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -133,35 +134,37 @@ public class StaffDashboardActivity extends AppCompatActivity
                                 }
 
                                 // Get control number
-                                Long controlNumber = doc.getLong("controlNumber");
-                                int controlNum = controlNumber != null ? controlNumber.intValue() : 0;
-
-                                // Get products map and extract only the 'sold' value
-                                Map<String, Object> products = (Map<String, Object>) doc.get("products");
-                                String productName = "N/A";
-                                int soldQuantity = 0;
-
-                                if (products != null && !products.isEmpty()) {
-                                    Map<String, Object> firstProduct = (Map<String, Object>) products.get("0");
-                                    if (firstProduct != null) {
-                                        productName = (String) firstProduct.get("product");
-                                        Long sold = (Long) firstProduct.get("sold");
-                                        if (sold != null) {
-                                            soldQuantity = sold.intValue();
-                                        }
-                                    }
-                                }
+                                Long controlNumberLong = doc.getLong("controlNumber");
+                                int controlNum = controlNumberLong != null ? controlNumberLong.intValue() : 0;
 
                                 String entryType = doc.getString("entryType") != null ?
                                         doc.getString("entryType") : "N/A";
 
+                                String driver = doc.getString("driver") != null ?
+                                        doc.getString("driver") : "N/A";
+
+                                // Get products map
+                                List<Map<String, Object>> productsList = (List<Map<String, Object>>) doc.get("products");
+                                List<Product> productList = new ArrayList<>();
+
+                                if (productsList != null && !productsList.isEmpty()) {
+                                    for (Map<String, Object> productMap : productsList) {
+                                        String productName = (String) productMap.get("product");
+                                        Long sold = (Long) productMap.get("sold");
+                                        int soldQuantity = sold != null ? sold.intValue() : 0;
+                                        productList.add(new Product(productName, soldQuantity));
+                                    }
+                                }
+
+                                // Use the correct constructor with 'createdAtLong'
                                 entries.add(new Entry(
                                         entryId,
                                         entryDate,
-                                        productName,
                                         controlNum,
-                                        soldQuantity,
-                                        entryType
+                                        entryType,
+                                        driver,
+                                        createdAtLong, // Use createdAtLong directly
+                                        productList
                                 ));
                             } catch (Exception e) {
                                 Log.e("LoadEntries", "Error parsing entry: " + e.getMessage());
@@ -199,6 +202,8 @@ public class StaffDashboardActivity extends AppCompatActivity
 
         if (id == R.id.nav_profile) {
             startActivity(new Intent(this, ProfileActivity.class));
+        } else if (id == R.id.nav_all_entries) {
+            startActivity(new Intent(this, AllEntriesActivity.class));
         } else if (id == R.id.nav_change_password) {
             showChangePasswordDialog();
         } else if (id == R.id.nav_logout) {

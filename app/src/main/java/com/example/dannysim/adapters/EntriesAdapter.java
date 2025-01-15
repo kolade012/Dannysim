@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dannysim.R;
@@ -33,13 +34,23 @@ public class EntriesAdapter extends RecyclerView.Adapter<EntriesAdapter.EntryVie
     @Override
     public EntryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_entry, parent, false);
+                .inflate(R.layout.item_entry, parent, false); // Update layout name
         return new EntryViewHolder(view, parent.getContext());
     }
 
     @Override
     public void onBindViewHolder(@NonNull EntryViewHolder holder, int position) {
+        // Check if the position is valid and within the bounds of the entries list
+        if (position < 0 || position >= entries.size()) {
+            return; // Handle invalid position (e.g., log an error)
+        }
+
         Entry entry = entries.get(position);
+
+        // Check if entry is null before accessing its properties
+        if (entry == null) {
+            return; // or handle the null case in another way
+        }
 
         // Set the date
         holder.tvDate.setText(entry.getDate());
@@ -70,11 +81,10 @@ public class EntriesAdapter extends RecyclerView.Adapter<EntriesAdapter.EntryVie
         // Set the driver name
         holder.tvDriver.setText(entry.getDriver());
 
-        // Set the first product info
-        String productInfo = String.format("%s - %d units",
-                entry.getFirstProductName(),
-                entry.getFirstProductSoldQuantity());
-        holder.tvProductInfo.setText(productInfo);
+        // Set up product recycler view
+        ProductsAdapter productsAdapter = new ProductsAdapter(entry.getProducts());
+        holder.rvProducts.setLayoutManager(new LinearLayoutManager(holder.context, LinearLayoutManager.HORIZONTAL, false));
+        holder.rvProducts.setAdapter(productsAdapter);
 
         // Set click listener
         holder.cardView.setOnClickListener(v -> {
@@ -100,7 +110,7 @@ public class EntriesAdapter extends RecyclerView.Adapter<EntriesAdapter.EntryVie
         TextView tvControlNumber;
         TextView tvEntryType;
         TextView tvDriver;
-        TextView tvProductInfo;
+        RecyclerView rvProducts;
         private Context context; // Add context field
 
         EntryViewHolder(View itemView, Context context) {
@@ -110,8 +120,8 @@ public class EntriesAdapter extends RecyclerView.Adapter<EntriesAdapter.EntryVie
             tvControlNumber = itemView.findViewById(R.id.tvControlNumber);
             tvEntryType = itemView.findViewById(R.id.tvEntryType);
             tvDriver = itemView.findViewById(R.id.tvDriver);
-            tvProductInfo = itemView.findViewById(R.id.tvProductInfo);
-            this.context = this.context; // Assign the passed context
+            rvProducts = itemView.findViewById(R.id.rvProducts);
+            this.context = context;
         }
     }
 }
