@@ -40,16 +40,16 @@ public class EntriesAdapter extends RecyclerView.Adapter<EntriesAdapter.EntryVie
 
     @Override
     public void onBindViewHolder(@NonNull EntryViewHolder holder, int position) {
-        // Check if the position is valid and within the bounds of the entries list
+        // Check if the position is valid
         if (position < 0 || position >= entries.size()) {
-            return; // Handle invalid position (e.g., log an error)
+            return; // Handle invalid position
         }
 
         Entry entry = entries.get(position);
 
-        // Check if entry is null before accessing its properties
+        // Check if entry is null before accessing properties
         if (entry == null) {
-            return; // or handle the null case in another way
+            return; // Or handle the null case in another way
         }
 
         // Set the date
@@ -67,8 +67,6 @@ public class EntriesAdapter extends RecyclerView.Adapter<EntriesAdapter.EntryVie
                 backgroundColorRes = R.color.green_color; // Assuming you have green_color defined in your colors.xml
                 break;
             case "sales":
-                backgroundColorRes = R.color.red_color; // Assuming you have red_color defined in your colors.xml
-                break;
             case "stock out":
                 backgroundColorRes = R.color.red_color; // Assuming you have red_color defined in your colors.xml
                 break;

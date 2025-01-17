@@ -102,88 +102,134 @@ public class StaffDashboardActivity extends AppCompatActivity
             progressBar.setVisibility(View.VISIBLE);
         }
 
+        // Check if db is initialized
+        if (db == null) {
+            Log.e("LoadEntries", "Database reference is null");
+            if (progressBar != null) {
+                progressBar.setVisibility(View.GONE);
+            }
+            return;
+        }
+
         db.collection("entries")
                 .orderBy("createdAt", Query.Direction.DESCENDING)
                 .orderBy("controlNumber", Query.Direction.ASCENDING)
                 .limit(10)
                 .addSnapshotListener((value, error) -> {
+                    // Always ensure progressBar is hidden
                     if (progressBar != null) {
                         progressBar.setVisibility(View.GONE);
                     }
 
+                    // Handle potential errors
                     if (error != null) {
-                        Toast.makeText(this, "Error loading entries: " + error.getMessage(),
+                        Log.e("LoadEntries", "Error loading entries: " + error.getMessage());
+                        Toast.makeText(StaffDashboardActivity.this, "Error loading entries: " + error.getMessage(),
                                 Toast.LENGTH_SHORT).show();
+                        updateVisibility(true);
                         return;
                     }
 
-                    if (value != null && !value.isEmpty()) {
+                    // Check for null or empty snapshot
+                    if (value == null || value.isEmpty()) {
+                        updateVisibility(true);
+                        return;
+                    }
+
+                    try {
                         List<Entry> entries = new ArrayList<>();
                         SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy HH:mm", Locale.getDefault());
 
                         for (DocumentSnapshot doc : value.getDocuments()) {
                             try {
-                                String entryId = doc.getId();
-
-                                // Handle createdAt as Long instead of Timestamp
-                                String entryDate = "N/A";
-                                Long createdAtLong = doc.getLong("createdAt");
-                                if (createdAtLong != null) {
-                                    Date date = new Date(createdAtLong);
-                                    entryDate = dateFormat.format(date);
+                                if (!doc.exists()) {
+                                    continue;
                                 }
 
-                                // Get control number
-                                Long controlNumberLong = doc.getLong("controlNumber");
-                                int controlNum = controlNumberLong != null ? controlNumberLong.intValue() : 0;
+                                // Get basic fields with defaults
+                                String entryId = doc.getId();
+                                Long createdAtLong = doc.getLong("createdAt");
+                                String entryDate = "N/A";
 
-                                String entryType = doc.getString("entryType") != null ?
-                                        doc.getString("entryType") : "N/A";
-
-                                String driver = doc.getString("driver") != null ?
-                                        doc.getString("driver") : "N/A";
-
-                                // Get products map
-                                List<Map<String, Object>> productsList = (List<Map<String, Object>>) doc.get("products");
-                                List<Product> productList = new ArrayList<>();
-
-                                if (productsList != null && !productsList.isEmpty()) {
-                                    for (Map<String, Object> productMap : productsList) {
-                                        String productName = (String) productMap.get("product");
-                                        Long sold = (Long) productMap.get("sold");
-                                        int soldQuantity = sold != null ? sold.intValue() : 0;
-                                        productList.add(new Product(productName, soldQuantity));
+                                // Format date if available
+                                if (createdAtLong != null) {
+                                    try {
+                                        entryDate = dateFormat.format(new Date(createdAtLong));
+                                    } catch (Exception e) {
+                                        Log.e("LoadEntries", "Date formatting error: " + e.getMessage());
                                     }
                                 }
 
-                                // Use the correct constructor with 'createdAtLong'
-                                entries.add(new Entry(
+                                // Get other fields with defaults
+                                int controlNum = doc.getLong("controlNumber").intValue();
+                                String entryType = doc.getString("entryType");
+                                if (entryType == null) entryType = "N/A";
+
+                                String driver = doc.getString("driver");
+                                if (driver == null) driver = "N/A";
+
+                                // Process products safely
+                                List<Product> productList = new ArrayList<>();
+                                Object productsObj = doc.get("products");
+                                if (productsObj instanceof List<?>) {
+                                    List<?> productsList = (List<?>) productsObj;
+                                    for (Object item : productsList) {
+                                        if (item instanceof Map<?, ?>) {
+                                            try {
+                                                Map<String, Object> productMap = (Map<String, Object>) item;
+                                                String productName = (String) productMap.getOrDefault("product", "N/A");
+                                                Long soldLong = (Long) productMap.getOrDefault("sold", 0L);
+                                                int soldQuantity = soldLong != null ? soldLong.intValue() : 0;
+                                                productList.add(new Product(productName, soldQuantity));
+                                            } catch (Exception e) {
+                                                Log.e("LoadEntries", "Error parsing product: " + e.getMessage());
+                                            }
+                                        }
+                                    }
+                                }
+
+                                // Create entry with null-safe constructor
+                                Entry entry = new Entry(
                                         entryId,
                                         entryDate,
                                         controlNum,
                                         entryType,
                                         driver,
-                                        createdAtLong, // Use createdAtLong directly
+                                        createdAtLong != null ? createdAtLong : 0L,
                                         productList
-                                ));
+                                );
+                                entries.add(entry);
+
                             } catch (Exception e) {
                                 Log.e("LoadEntries", "Error parsing entry: " + e.getMessage());
+                                // Continue to next document
+                                continue;
                             }
                         }
 
-                        if (entriesAdapter == null) {
-                            entriesAdapter = new EntriesAdapter(entries, entry -> {
-                                // Handle entry click - navigate to details
-                                Intent intent = new Intent(StaffDashboardActivity.this, EntryDetailsActivity.class);
-                                intent.putExtra("entry", entry);
-                                startActivity(intent);
-                            });
-                            recyclerViewEntries.setAdapter(entriesAdapter);
-                        } else {
-                            entriesAdapter.setEntries(entries);
+                        // Update UI on main thread
+                        if (recyclerViewEntries != null) {
+                            if (entriesAdapter == null) {
+                                entriesAdapter = new EntriesAdapter(entries, entry -> {
+                                    try {
+                                        Intent intent = new Intent(StaffDashboardActivity.this, EntryDetailsActivity.class);
+                                        intent.putExtra("entry", entry);
+                                        startActivity(intent);
+                                    } catch (Exception e) {
+                                        Log.e("LoadEntries", "Error launching details: " + e.getMessage());
+                                        Toast.makeText(StaffDashboardActivity.this,
+                                                "Error opening entry details", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                recyclerViewEntries.setAdapter(entriesAdapter);
+                            } else {
+                                entriesAdapter.setEntries(entries);
+                            }
                         }
+
                         updateVisibility(entries.isEmpty());
-                    } else {
+                    } catch (Exception e) {
+                        Log.e("LoadEntries", "Fatal error in entry processing: " + e.getMessage());
                         updateVisibility(true);
                     }
                 });

@@ -1,10 +1,10 @@
 package com.example.dannysim.models;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Entry implements Serializable {
-
     private String id;
     private String date;
     private int controlNumber;
@@ -12,13 +12,26 @@ public class Entry implements Serializable {
     private String driver;
     private long createdAt;
     private int month;
-    private List<Product> products; // Use List<Product> for products
+    private List<Product> products;
 
-    // Required empty constructor for Firebase (if needed)
-    public Entry(String entryId, String entryDate, int controlNum, String entryType, String driver, Long createdAtLong, List<Product> productList) {
+    // Empty constructor for Firebase
+    public Entry() {
+        this.products = new ArrayList<>();
     }
 
-    // Constructor for creating entries from Firebase data
+    // Main constructor used by loadRecentEntries
+    public Entry(String entryId, String entryDate, int controlNum, String entryType,
+                 String driver, Long createdAtLong, List<Product> productList) {
+        this.id = entryId;
+        this.date = entryDate;
+        this.controlNumber = controlNum;
+        this.entryType = entryType;
+        this.driver = driver;
+        this.createdAt = createdAtLong != null ? createdAtLong : 0L;
+        this.products = productList != null ? productList : new ArrayList<>();
+    }
+
+    // Constructor for creating entries with month
     public Entry(String id, String date, int controlNumber, String entryType,
                  String driver, long createdAt, int month) {
         this.id = id;
@@ -28,10 +41,10 @@ public class Entry implements Serializable {
         this.driver = driver;
         this.createdAt = createdAt;
         this.month = month;
-        this.products = java.util.Collections.emptyList(); // Initialize empty list
+        this.products = new ArrayList<>();
     }
 
-    // Constructor for list display (if needed)
+    // Constructor for list display
     public Entry(String id, String date, int controlNumber, String entryType,
                  String driver, int createdAt) {
         this.id = id;
@@ -40,12 +53,15 @@ public class Entry implements Serializable {
         this.entryType = entryType;
         this.driver = driver;
         this.createdAt = createdAt;
-        this.products = java.util.Collections.emptyList(); // Initialize empty list
+        this.products = new ArrayList<>();
     }
 
     // Add a product to the entry
     public void addProduct(Product product) {
-        if (products != null) {
+        if (products == null) {
+            products = new ArrayList<>();
+        }
+        if (product != null) {
             products.add(product);
         }
     }
@@ -61,7 +77,8 @@ public class Entry implements Serializable {
     // Get the first product name (for list display)
     public String getFirstProductName() {
         if (products != null && !products.isEmpty()) {
-            return products.get(0).getName();
+            Product firstProduct = products.get(0);
+            return firstProduct != null ? firstProduct.getName() : "N/A";
         }
         return "N/A";
     }
@@ -69,7 +86,8 @@ public class Entry implements Serializable {
     // Get the first product's sold quantity (for list display)
     public int getFirstProductSoldQuantity() {
         if (products != null && !products.isEmpty()) {
-            return products.get(0).getSoldQuantity();
+            Product firstProduct = products.get(0);
+            return firstProduct != null ? firstProduct.getSoldQuantity() : 0;
         }
         return 0;
     }
@@ -132,10 +150,10 @@ public class Entry implements Serializable {
     }
 
     public List<Product> getProducts() {
-        return products;
+        return products != null ? products : new ArrayList<>();
     }
 
     public void setProducts(List<Product> products) {
-        this.products = products;
+        this.products = products != null ? products : new ArrayList<>();
     }
 }
