@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.HorizontalScrollView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -69,6 +70,25 @@ public class StaffDashboardActivity extends AppCompatActivity
         progressBar = findViewById(R.id.progressBar);
         tvNoEntries = findViewById(R.id.tvNoEntries);
         recyclerViewEntries = findViewById(R.id.recyclerViewEntries);
+
+        // Find the ScrollViews
+        HorizontalScrollView headerScroll = findViewById(R.id.headerScrollView);
+        HorizontalScrollView contentScroll = findViewById(R.id.contentScrollView);
+
+        // Sync horizontal scrolling
+        headerScroll.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                contentScroll.scrollTo(scrollX, 0);
+            }
+        });
+
+        contentScroll.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                headerScroll.scrollTo(scrollX, 0);
+            }
+        });
 
         // Setup toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);

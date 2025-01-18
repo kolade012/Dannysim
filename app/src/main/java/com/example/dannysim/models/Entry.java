@@ -74,22 +74,16 @@ public class Entry implements Serializable {
         return null;
     }
 
-    // Get the first product name (for list display)
-    public String getFirstProductName() {
-        if (products != null && !products.isEmpty()) {
-            Product firstProduct = products.get(0);
-            return firstProduct != null ? firstProduct.getName() : "N/A";
+    // Get the names and sold quantities of all products (for spreadsheet-like display)
+    public List<String> getProductDetailsList() {
+        List<String> productDetails = new ArrayList<>();
+        if (products != null) {
+            for (Product product : products) {
+                String details = product.getName() + " (" + product.getSoldQuantity() + ")";
+                productDetails.add(details);
+            }
         }
-        return "N/A";
-    }
-
-    // Get the first product's sold quantity (for list display)
-    public int getFirstProductSoldQuantity() {
-        if (products != null && !products.isEmpty()) {
-            Product firstProduct = products.get(0);
-            return firstProduct != null ? firstProduct.getSoldQuantity() : 0;
-        }
-        return 0;
+        return productDetails;
     }
 
     // Getters and Setters

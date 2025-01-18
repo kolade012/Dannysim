@@ -1,6 +1,6 @@
 package com.example.dannysim.models;
 
-import java.io.Serializable;
+import java.io.Serializable;;
 
 public class Product implements Serializable {
     private String name;
