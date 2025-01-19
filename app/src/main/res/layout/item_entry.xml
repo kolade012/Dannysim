@@ -24,7 +24,13 @@
                 android:layout_height="wrap_content"
                 android:minWidth="100dp"
                 android:textAlignment="center"
+                android:background="@drawable/cell_border"
                 android:textColor="@color/black" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#CCCCCC"/>
 
             <TextView
                 android:id="@+id/tvControlNumber"
@@ -33,7 +39,13 @@
                 android:layout_marginStart="16dp"
                 android:minWidth="55dp"
                 android:textAlignment="center"
+                android:background="@drawable/cell_border"
                 android:textColor="@color/black" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#CCCCCC"/>
 
             <TextView
                 android:id="@+id/tvEntryType"
@@ -42,7 +54,13 @@
                 android:layout_marginStart="16dp"
                 android:minWidth="80dp"
                 android:textAlignment="center"
+                android:background="@drawable/cell_border"
                 android:textColor="@color/black" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#CCCCCC"/>
 
             <TextView
                 android:id="@+id/tvDriver"
@@ -51,7 +69,13 @@
                 android:layout_marginStart="16dp"
                 android:minWidth="100dp"
                 android:textAlignment="center"
+                android:background="@drawable/cell_border"
                 android:textColor="@color/black" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#CCCCCC"/>
 
             <TextView
                 android:id="@+id/tv30CL"
@@ -60,7 +84,13 @@
                 android:layout_marginStart="16dp"
                 android:minWidth="90dp"
                 android:textAlignment="center"
+                android:background="@drawable/cell_border"
                 android:textColor="@color/black" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#CCCCCC"/>
 
             <TextView
                 android:id="@+id/tv35CL_7UP"
@@ -69,7 +99,13 @@
                 android:layout_marginStart="16dp"
                 android:minWidth="80dp"
                 android:textAlignment="center"
+                android:background="@drawable/cell_border"
                 android:textColor="@color/black" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#CCCCCC"/>
 
             <TextView
                 android:id="@+id/tv35CL_M_D"
@@ -78,7 +114,13 @@
                 android:layout_marginStart="16dp"
                 android:minWidth="80dp"
                 android:textAlignment="center"
+                android:background="@drawable/cell_border"
                 android:textColor="@color/black" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#CCCCCC"/>
 
             <TextView
                 android:id="@+id/tv50CL"
@@ -87,7 +129,13 @@
                 android:layout_marginStart="16dp"
                 android:minWidth="80dp"
                 android:textAlignment="center"
+                android:background="@drawable/cell_border"
                 android:textColor="@color/black" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#CCCCCC"/>
 
             <TextView
                 android:id="@+id/tvPEPSI"
@@ -96,7 +144,13 @@
                 android:layout_marginStart="16dp"
                 android:minWidth="80dp"
                 android:textAlignment="center"
+                android:background="@drawable/cell_border"
                 android:textColor="@color/black" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#CCCCCC"/>
 
             <TextView
                 android:id="@+id/tvTBL"
@@ -105,7 +159,13 @@
                 android:layout_marginStart="16dp"
                 android:minWidth="80dp"
                 android:textAlignment="center"
+                android:background="@drawable/cell_border"
                 android:textColor="@color/black" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#CCCCCC"/>
 
             <TextView
                 android:id="@+id/tvG_APPLE"
@@ -114,7 +174,13 @@
                 android:layout_marginStart="16dp"
                 android:minWidth="80dp"
                 android:textAlignment="center"
+                android:background="@drawable/cell_border"
                 android:textColor="@color/black" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#CCCCCC"/>
 
             <TextView
                 android:id="@+id/tvPINEAPPLE"
@@ -123,7 +189,13 @@
                 android:layout_marginStart="16dp"
                 android:minWidth="80dp"
                 android:textAlignment="center"
+                android:background="@drawable/cell_border"
                 android:textColor="@color/black" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#CCCCCC"/>
 
             <TextView
                 android:id="@+id/tv75CL_AQUAFINA"
@@ -132,7 +204,13 @@
                 android:layout_marginStart="16dp"
                 android:minWidth="80dp"
                 android:textAlignment="center"
+                android:background="@drawable/cell_border"
                 android:textColor="@color/black" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#CCCCCC"/>
 
             <TextView
                 android:id="@+id/tvRED_APPLE"
@@ -141,7 +219,13 @@
                 android:layout_marginStart="16dp"
                 android:minWidth="80dp"
                 android:textAlignment="center"
+                android:background="@drawable/cell_border"
                 android:textColor="@color/black" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#CCCCCC"/>
 
             <TextView
                 android:id="@+id/tv7UP"
@@ -150,7 +234,12 @@
                 android:layout_marginStart="16dp"
                 android:minWidth="80dp"
                 android:textAlignment="center"
+                android:background="@drawable/cell_border"
                 android:textColor="@color/black" />
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#CCCCCC"/>
 
             <TextView
                 android:id="@+id/tvORANGE"
@@ -159,7 +248,13 @@
                 android:layout_marginStart="16dp"
                 android:minWidth="80dp"
                 android:textAlignment="center"
+                android:background="@drawable/cell_border"
                 android:textColor="@color/black" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#CCCCCC"/>
 
             <TextView
                 android:id="@+id/tvSODA"
@@ -168,7 +263,13 @@
                 android:layout_marginStart="16dp"
                 android:minWidth="80dp"
                 android:textAlignment="center"
+                android:background="@drawable/cell_border"
                 android:textColor="@color/black" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#CCCCCC"/>
 
             <TextView
                 android:id="@+id/tvS_ORANGE"
@@ -177,7 +278,13 @@
                 android:layout_marginStart="16dp"
                 android:minWidth="80dp"
                 android:textAlignment="center"
+                android:background="@drawable/cell_border"
                 android:textColor="@color/black" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#CCCCCC"/>
 
             <TextView
                 android:id="@+id/tvS_7UP"
@@ -186,7 +293,13 @@
                 android:layout_marginStart="16dp"
                 android:minWidth="80dp"
                 android:textAlignment="center"
+                android:background="@drawable/cell_border"
                 android:textColor="@color/black" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#CCCCCC"/>
 
             <TextView
                 android:id="@+id/tvSK_50CL"
@@ -195,7 +308,13 @@
                 android:layout_marginStart="16dp"
                 android:minWidth="80dp"
                 android:textAlignment="center"
+                android:background="@drawable/cell_border"
                 android:textColor="@color/black" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#CCCCCC"/>
 
             <TextView
                 android:id="@+id/tvSK_30CL"
@@ -204,7 +323,13 @@
                 android:layout_marginStart="16dp"
                 android:minWidth="80dp"
                 android:textAlignment="center"
+                android:background="@drawable/cell_border"
                 android:textColor="@color/black" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#CCCCCC"/>
 
         </LinearLayout>
     </HorizontalScrollView>

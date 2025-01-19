@@ -9,4 +9,5 @@
     <string name="create_entry">Create Entry</string>
     <string name="view_stock">View Stock</string>
     <string name="view_entries">View Entries</string>
+    <string name="current_filter">Showing entries for: %1$s</string>
 </resources>

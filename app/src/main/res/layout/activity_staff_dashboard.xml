@@ -137,18 +137,30 @@
                                 android:minWidth="100dp"
                                 android:text="Date"
                                 android:textAlignment="center"
+                                android:background="@drawable/header_cell_border"
                                 android:textColor="@android:color/white"
                                 android:textStyle="bold" />
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="#CCCCCC"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="16dp"
                                 android:minWidth="80dp"
-                                android:text="Control #"
+                                android:text="Control #:"
                                 android:textAlignment="center"
+                                android:background="@drawable/header_cell_border"
                                 android:textColor="@android:color/white"
                                 android:textStyle="bold" />
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="#CCCCCC"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -157,8 +169,14 @@
                                 android:minWidth="55dp"
                                 android:text="Type"
                                 android:textAlignment="center"
+                                android:background="@drawable/header_cell_border"
                                 android:textColor="@android:color/white"
                                 android:textStyle="bold" />
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="#CCCCCC"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -167,8 +185,14 @@
                                 android:minWidth="120dp"
                                 android:text="Driver"
                                 android:textAlignment="center"
+                                android:background="@drawable/header_cell_border"
                                 android:textColor="@android:color/white"
                                 android:textStyle="bold" />
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="#CCCCCC"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -177,8 +201,14 @@
                                 android:minWidth="80dp"
                                 android:text="30CL"
                                 android:textAlignment="center"
+                                android:background="@drawable/header_cell_border"
                                 android:textColor="@android:color/white"
                                 android:textStyle="bold" />
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="#CCCCCC"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -187,8 +217,14 @@
                                 android:minWidth="80dp"
                                 android:text="35CL 7UP"
                                 android:textAlignment="center"
+                                android:background="@drawable/header_cell_border"
                                 android:textColor="@android:color/white"
                                 android:textStyle="bold" />
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="#CCCCCC"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -197,8 +233,14 @@
                                 android:minWidth="80dp"
                                 android:text="35CL M.D"
                                 android:textAlignment="center"
+                                android:background="@drawable/header_cell_border"
                                 android:textColor="@android:color/white"
                                 android:textStyle="bold" />
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="#CCCCCC"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -207,18 +249,14 @@
                                 android:minWidth="80dp"
                                 android:text="50CL"
                                 android:textAlignment="center"
+                                android:background="@drawable/header_cell_border"
                                 android:textColor="@android:color/white"
                                 android:textStyle="bold" />
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="16dp"
-                                android:minWidth="80dp"
-                                android:text="35CL 7UP"
-                                android:textAlignment="center"
-                                android:textColor="@android:color/white"
-                                android:textStyle="bold" />
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="#CCCCCC"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -227,8 +265,14 @@
                                 android:minWidth="80dp"
                                 android:text="PEPSI"
                                 android:textAlignment="center"
+                                android:background="@drawable/header_cell_border"
                                 android:textColor="@android:color/white"
                                 android:textStyle="bold" />
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="#CCCCCC"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -237,8 +281,14 @@
                                 android:minWidth="80dp"
                                 android:text="TBL"
                                 android:textAlignment="center"
+                                android:background="@drawable/header_cell_border"
                                 android:textColor="@android:color/white"
                                 android:textStyle="bold" />
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="#CCCCCC"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -247,8 +297,14 @@
                                 android:minWidth="80dp"
                                 android:text="G/APPLE"
                                 android:textAlignment="center"
+                                android:background="@drawable/header_cell_border"
                                 android:textColor="@android:color/white"
                                 android:textStyle="bold" />
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="#CCCCCC"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -257,8 +313,14 @@
                                 android:minWidth="80dp"
                                 android:text="PINEAPPLE"
                                 android:textAlignment="center"
+                                android:background="@drawable/header_cell_border"
                                 android:textColor="@android:color/white"
                                 android:textStyle="bold" />
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="#CCCCCC"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -267,8 +329,14 @@
                                 android:minWidth="80dp"
                                 android:text="75CL AQUAFINA"
                                 android:textAlignment="center"
+                                android:background="@drawable/header_cell_border"
                                 android:textColor="@android:color/white"
                                 android:textStyle="bold" />
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="#CCCCCC"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -277,8 +345,14 @@
                                 android:minWidth="80dp"
                                 android:text="R/APPLE"
                                 android:textAlignment="center"
+                                android:background="@drawable/header_cell_border"
                                 android:textColor="@android:color/white"
                                 android:textStyle="bold" />
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="#CCCCCC"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -287,8 +361,14 @@
                                 android:minWidth="80dp"
                                 android:text="7UP"
                                 android:textAlignment="center"
+                                android:background="@drawable/header_cell_border"
                                 android:textColor="@android:color/white"
                                 android:textStyle="bold" />
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="#CCCCCC"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -296,19 +376,31 @@
                                 android:layout_marginStart="16dp"
                                 android:minWidth="80dp"
                                 android:textAlignment="center"
+                                android:background="@drawable/header_cell_border"
                                 android:text="ORANGE"
                                 android:textColor="@android:color/white"
                                 android:textStyle="bold" />
 
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="#CCCCCC"/>
+
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="16dp"
                                 android:minWidth="80dp"
                                 android:textAlignment="center"
+                                android:background="@drawable/header_cell_border"
                                 android:text="SODA"
                                 android:textColor="@android:color/white"
                                 android:textStyle="bold" />
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="#CCCCCC"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -316,9 +408,15 @@
                                 android:layout_marginStart="16dp"
                                 android:minWidth="80dp"
                                 android:text="S_ORANGE"
+                                android:background="@drawable/header_cell_border"
                                 android:textAlignment="center"
                                 android:textColor="@android:color/white"
                                 android:textStyle="bold" />
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="#CCCCCC"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -327,8 +425,14 @@
                                 android:minWidth="80dp"
                                 android:text="S_7UP"
                                 android:textAlignment="center"
+                                android:background="@drawable/header_cell_border"
                                 android:textColor="@android:color/white"
                                 android:textStyle="bold" />
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="#CCCCCC"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -337,8 +441,14 @@
                                 android:minWidth="80dp"
                                 android:text="SK 50CL"
                                 android:textAlignment="center"
+                                android:background="@drawable/header_cell_border"
                                 android:textColor="@android:color/white"
                                 android:textStyle="bold" />
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="#CCCCCC"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -346,9 +456,15 @@
                                 android:layout_marginStart="16dp"
                                 android:minWidth="80dp"
                                 android:textAlignment="center"
+                                android:background="@drawable/header_cell_border"
                                 android:text="SK 30CL"
                                 android:textColor="@android:color/white"
                                 android:textStyle="bold" />
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="#CCCCCC"/>
 
                         </LinearLayout>
                     </HorizontalScrollView>
