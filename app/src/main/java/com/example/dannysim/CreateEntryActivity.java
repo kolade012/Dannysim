@@ -1,11 +1,6 @@
 package com.example.dannysim;
 
 import android.app.DatePickerDialog;
-import androidx.appcompat.app.AlertDialog;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.snackbar.Snackbar;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
@@ -21,9 +16,14 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -199,6 +199,15 @@ public class CreateEntryActivity extends AppCompatActivity {
         DatePickerDialog datePickerDialog = new DatePickerDialog(
                 this,
                 (view, year, month, dayOfMonth) -> {
+                    Calendar selected = Calendar.getInstance();
+                    selected.set(year, month, dayOfMonth);
+
+                    // Check if selected date is in the future
+                    if (selected.after(Calendar.getInstance())) {
+                        showError("Cannot select future dates");
+                        return;
+                    }
+
                     Log.d(TAG, String.format("Date selected: %d/%d/%d", dayOfMonth, month + 1, year));
 
                     selectedDate.set(Calendar.YEAR, year);
@@ -212,6 +221,9 @@ public class CreateEntryActivity extends AppCompatActivity {
                 selectedDate.get(Calendar.MONTH),
                 selectedDate.get(Calendar.DAY_OF_MONTH)
         );
+
+        // Set the maximum date to today
+        datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
 
         datePickerDialog.show();
     }

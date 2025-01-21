@@ -10,12 +10,9 @@ import android.widget.HorizontalScrollView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import android.util.Log;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -26,7 +23,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.dannysim.adapters.EntriesAdapter;
 import com.example.dannysim.models.Entry;
 import com.example.dannysim.models.Product;
-import com.example.dannysim.models.User;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
@@ -38,11 +34,10 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-import androidx.appcompat.app.AlertDialog;
-
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -266,9 +261,7 @@ public class StaffDashboardActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.nav_profile) {
-            startActivity(new Intent(this, ProfileActivity.class));
-        } else if (id == R.id.nav_all_entries) {
+        if (id == R.id.nav_all_entries) {
             startActivity(new Intent(this, AllEntriesActivity.class));
         } else if (id == R.id.nav_change_password) {
             showChangePasswordDialog();
