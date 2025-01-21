@@ -22,10 +22,8 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -107,7 +105,7 @@ public class CreateEntryActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
     }
 
-    private void initializeViews() {
+    private boolean initializeViews() {
         Log.d(TAG, "Initializing views");
 
         try {
@@ -126,6 +124,44 @@ public class CreateEntryActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.e(TAG, "Error initializing views", e);
             throw e;
+        }
+
+        // Initialize validator
+        InputValidator validator = new InputValidator(this);
+
+        // Set up input formatting and validation
+        driverEdit.addTextChangedListener(new InputFormatWatcher(driverEdit, validator, "driver"));
+
+        // Add validation to existing validateInputs() method
+        boolean validateInputs;
+        {
+            boolean isValid = true;
+            validator = new InputValidator(this);
+
+            if (!validator.validateDriver(driverEdit)) {
+                isValid = false;
+            }
+
+            if (!validator.validateDate(dateEdit)) {
+                isValid = false;
+            }
+
+            for (int i = 1; i < productsTable.getChildCount(); i++) {
+                TableRow row = (TableRow) productsTable.getChildAt(i);
+                EditText outEdit = (EditText) row.getChildAt(2);
+                EditText inEdit = (EditText) row.getChildAt(3);
+
+                if (!validator.validateQuantity(outEdit, "OUT quantity") ||
+                        !validator.validateQuantity(inEdit, "IN quantity")) {
+                    isValid = false;
+                }
+
+                // Add quantity watchers to new rows
+                outEdit.addTextChangedListener(new InputFormatWatcher(outEdit, validator, "quantity"));
+                inEdit.addTextChangedListener(new InputFormatWatcher(inEdit, validator, "quantity"));
+            }
+
+            return isValid;
         }
     }
 

@@ -26,4 +26,10 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+
+    <style name="Theme.DannySim" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Other theme attributes -->
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
 </resources>

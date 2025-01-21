@@ -22,6 +22,7 @@
         <activity
             android:name=".AllEntriesActivity"
             android:label="All Entries"
+            android:theme="@style/Theme.Dannysim.NoActionBar"
             android:parentActivityName=".StaffDashboardActivity"
             android:exported="false"/>
 
