@@ -74,11 +74,11 @@
                 android:layout_height="wrap_content"
                 android:text="DRIVER: "/>
 
-            <EditText
-                android:id="@+id/driver"
-                android:layout_width="150dp"
+            <Spinner
+                android:id="@+id/driverSpinner"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
-                tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+                tools:ignore="TouchTargetSizeCheck" />
 
             <Space
                 android:layout_width="0dp"
@@ -101,23 +101,39 @@
         </LinearLayout>
 
         <!-- Products Table -->
-        <TableLayout
-            android:id="@+id/productsTable"
+        <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:stretchColumns="*"
             android:layout_marginTop="16dp">
 
-            <!-- Table Header -->
-            <TableRow
-                android:background="#EEEEEE">
-                <TextView android:text="S/N" android:padding="3dp"/>
-                <TextView android:text="PRODUCTS" android:padding="3dp"/>
-                <TextView android:text="OUT" android:padding="3dp"/>
-                <TextView android:text="IN" android:padding="3dp"/>
-                <TextView android:text="SOLD" android:padding="3dp"/>
-            </TableRow>
-        </TableLayout>
+            <TableLayout
+                android:id="@+id/productsTable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:stretchColumns="*">
+
+                <!-- Table Header -->
+                <TableRow android:background="#EEEEEE">
+                    <TextView android:text="S/N" android:padding="3dp"/>
+                    <TextView android:text="PRODUCTS" android:padding="3dp"/>
+                    <TextView android:text="OUT" android:minWidth="40dp" android:padding="3dp"/>
+                    <TextView android:text="IN" android:minWidth="40dp" android:padding="3dp"/>
+                    <TextView android:text="SOLD" android:minWidth="40dp" android:padding="3dp"/>
+                    <TextView
+                        android:id="@+id/rateHeader"
+                        android:text="RATE"
+                        android:padding="1dp"
+                        android:minWidth="40dp"
+                        android:visibility="gone"/>
+                    <TextView
+                        android:id="@+id/valueHeader"
+                        android:text="VALUE"
+                        android:padding="1dp"
+                        android:minWidth="40dp"
+                        android:visibility="gone"/>
+                </TableRow>
+            </TableLayout>
+        </HorizontalScrollView>
 
         <!-- Add Row Button -->
         <Button

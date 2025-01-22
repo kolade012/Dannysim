@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -52,10 +53,12 @@ public class CreateEntryActivity extends AppCompatActivity {
     private TableLayout productsTable;
     private TextView controlNumberView;
     private EditText dateEdit;
-    private EditText driverEdit;
+    private Spinner driverSpinner;
     private Spinner entryTypeSpinner;
     private Button addRowButton;
     private Button saveButton;
+    private TextView rateHeader;
+    private TextView valueHeader;
 
     // Tracking variables
     private int rowCount = 0;
@@ -81,7 +84,9 @@ public class CreateEntryActivity extends AppCompatActivity {
         try {
             initializeFirebase();
             initializeViews();
+            setupEntryTypeListener();
             setupEntryTypeSpinner();
+            setupDriverSpinner();
             setupDatePicker();
             setupButtons();
             getLatestControlNumber();
@@ -112,8 +117,10 @@ public class CreateEntryActivity extends AppCompatActivity {
             productsTable = findViewById(R.id.productsTable);
             controlNumberView = findViewById(R.id.controlNumber);
             dateEdit = findViewById(R.id.date);
-            driverEdit = findViewById(R.id.driver);
+            driverSpinner = findViewById(R.id.driverSpinner);
             entryTypeSpinner = findViewById(R.id.entryTypeSpinner);
+            rateHeader = findViewById(R.id.rateHeader);
+            valueHeader = findViewById(R.id.valueHeader);
             addRowButton = findViewById(R.id.addRowButton);
             saveButton = findViewById(R.id.saveButton);
 
@@ -129,8 +136,8 @@ public class CreateEntryActivity extends AppCompatActivity {
         // Initialize validator
         InputValidator validator = new InputValidator(this);
 
-        // Set up input formatting and validation
-        driverEdit.addTextChangedListener(new InputFormatWatcher(driverEdit, validator, "driver"));
+//        // Set up input formatting and validation
+//        driverEdit.addTextChangedListener(new InputFormatWatcher(driverEdit, validator, "driver"));
 
         // Add validation to existing validateInputs() method
         boolean validateInputs;
@@ -138,9 +145,9 @@ public class CreateEntryActivity extends AppCompatActivity {
             boolean isValid = true;
             validator = new InputValidator(this);
 
-            if (!validator.validateDriver(driverEdit)) {
-                isValid = false;
-            }
+//            if (!validator.validateDriver(driverEdit)) {
+//                isValid = false;
+//            }
 
             if (!validator.validateDate(dateEdit)) {
                 isValid = false;
@@ -163,6 +170,49 @@ public class CreateEntryActivity extends AppCompatActivity {
 
             return isValid;
         }
+    }
+
+    private void setupDriverSpinner() {
+        Log.d(TAG, "Setting up Driver spinner");
+
+        try {
+            List<String> drivers = Arrays.asList("Samuel", "John", "Ugo", "Jude", "Joseph", "Shop Sales", "Madam Stella", "Madam Charity");
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                    android.R.layout.simple_spinner_item, drivers);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            driverSpinner.setAdapter(adapter);
+
+            Log.d(TAG, "Entry type spinner setup completed");
+        } catch (Exception e) {
+            Log.e(TAG, "Error setting up entry type spinner", e);
+            showErrorDialog("Setup Error", "Failed to setup entry types. Please restart the application.");
+        }
+    }
+
+    private void setupEntryTypeListener() {
+        entryTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedType = parent.getItemAtPosition(position).toString();
+                boolean isSales = "Sales".equals(selectedType);
+
+                // Show/hide rate and value columns
+                rateHeader.setVisibility(isSales ? View.VISIBLE : View.GONE);
+                valueHeader.setVisibility(isSales ? View.VISIBLE : View.GONE);
+
+                // Update existing rows
+                for (int i = 1; i < productsTable.getChildCount(); i++) {
+                    TableRow row = (TableRow) productsTable.getChildAt(i);
+                    if (row.getChildCount() > 5) {  // If rate and value views exist
+                        row.getChildAt(5).setVisibility(isSales ? View.VISIBLE : View.GONE);
+                        row.getChildAt(6).setVisibility(isSales ? View.VISIBLE : View.GONE);
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
     }
 
     private void setupEntryTypeSpinner() {
@@ -376,7 +426,20 @@ public class CreateEntryActivity extends AppCompatActivity {
             TextView soldText = new TextView(this);
             soldText.setPadding(3, 3, 3, 3);
 
-            setupRowCalculations(outEdit, inEdit, soldText);
+            // Rate EditText
+            EditText rateEdit = new EditText(this);
+            rateEdit.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+            rateEdit.setPadding(3, 3, 3, 3);
+            rateEdit.setVisibility(entryTypeSpinner.getSelectedItem().toString().equals("Sales") ?
+                    View.VISIBLE : View.GONE);
+
+            // Value TextView
+            TextView valueText = new TextView(this);
+            valueText.setPadding(3, 3, 3, 3);
+            valueText.setVisibility(entryTypeSpinner.getSelectedItem().toString().equals("Sales") ?
+                    View.VISIBLE : View.GONE);
+
+            setupRowCalculations(outEdit, inEdit, soldText, rateEdit, valueText);
 
             // Add views to row
             row.addView(serialNo);
@@ -384,6 +447,8 @@ public class CreateEntryActivity extends AppCompatActivity {
             row.addView(outEdit);
             row.addView(inEdit);
             row.addView(soldText);
+            row.addView(rateEdit);
+            row.addView(valueText);
 
             productsTable.addView(row);
 
@@ -404,7 +469,7 @@ public class CreateEntryActivity extends AppCompatActivity {
                 .show();
     }
 
-    private void setupRowCalculations(EditText outEdit, EditText inEdit, TextView soldText) {
+    private void setupRowCalculations(EditText outEdit, EditText inEdit, TextView soldText, EditText rateEdit, TextView valueText) {
         TextWatcher calculateSold = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -416,38 +481,66 @@ public class CreateEntryActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                calculateSoldValue(outEdit, inEdit, soldText);
+                try {
+                    int out = outEdit.getText().toString().isEmpty() ? 0 :
+                            Integer.parseInt(outEdit.getText().toString());
+                    int in = inEdit.getText().toString().isEmpty() ? 0 :
+                            Integer.parseInt(inEdit.getText().toString());
+                    float rate = rateEdit.getText().toString().isEmpty() ? 0 :
+                            Float.parseFloat(rateEdit.getText().toString());
+
+                    String entryType = entryTypeSpinner.getSelectedItem().toString();
+                    int soldValue;
+
+                    if (entryType.equals("Sales")) {
+                        soldValue = out - in;
+                    } else {
+                        soldValue = Math.abs(out - in);
+                    }
+
+                    soldText.setText(String.valueOf(soldValue));
+
+                    // Calculate and display value
+                    float totalValue = soldValue * rate;
+                    valueText.setText(String.format(Locale.US, "%.2f", totalValue));
+
+                } catch (NumberFormatException e) {
+                    Log.e(TAG, "Error calculating values", e);
+                    soldText.setText("0");
+                    valueText.setText("0.00");
+                }
             }
         };
 
         outEdit.addTextChangedListener(calculateSold);
         inEdit.addTextChangedListener(calculateSold);
+        rateEdit.addTextChangedListener(calculateSold);
     }
 
-    private void calculateSoldValue(EditText outEdit, EditText inEdit, TextView soldText) {
-        try {
-            int out = outEdit.getText().toString().isEmpty() ? 0 :
-                    Integer.parseInt(outEdit.getText().toString());
-            int in = inEdit.getText().toString().isEmpty() ? 0 :
-                    Integer.parseInt(inEdit.getText().toString());
-
-            String entryType = entryTypeSpinner.getSelectedItem().toString();
-            int soldValue;
-
-            if (entryType.equals("Sales")) {
-                soldValue = out - in;
-            } else {
-                soldValue = Math.abs(out - in);
-            }
-
-            soldText.setText(String.valueOf(soldValue));
-            Log.d(TAG, String.format("Calculated sold value: %d (out: %d, in: %d, type: %s)",
-                    soldValue, out, in, entryType));
-        } catch (NumberFormatException e) {
-            Log.e(TAG, "Error calculating sold value", e);
-            soldText.setText("0");
-        }
-    }
+//    private void calculateSoldValue(EditText outEdit, EditText inEdit, TextView soldText) {
+//        try {
+//            int out = outEdit.getText().toString().isEmpty() ? 0 :
+//                    Integer.parseInt(outEdit.getText().toString());
+//            int in = inEdit.getText().toString().isEmpty() ? 0 :
+//                    Integer.parseInt(inEdit.getText().toString());
+//
+//            String entryType = entryTypeSpinner.getSelectedItem().toString();
+//            int soldValue;
+//
+//            if (entryType.equals("Sales")) {
+//                soldValue = out - in;
+//            } else {
+//                soldValue = Math.abs(out - in);
+//            }
+//
+//            soldText.setText(String.valueOf(soldValue));
+//            Log.d(TAG, String.format("Calculated sold value: %d (out: %d, in: %d, type: %s)",
+//                    soldValue, out, in, entryType));
+//        } catch (NumberFormatException e) {
+//            Log.e(TAG, "Error calculating sold value", e);
+//            soldText.setText("0");
+//        }
+//    }
 
     private List<String> getProductsList() {
         return Arrays.asList(
@@ -467,8 +560,8 @@ public class CreateEntryActivity extends AppCompatActivity {
     }
 
     private boolean validateInputs() {
-        if (TextUtils.isEmpty(driverEdit.getText())) {
-            showError("Please enter driver name");
+        if (driverSpinner.getSelectedItem() == null) {
+            showError("Please select a driver");
             return false;
         }
 
@@ -498,7 +591,7 @@ public class CreateEntryActivity extends AppCompatActivity {
         try {
             StringBuilder preview = new StringBuilder();
             preview.append("Control No: ").append(currentControlNumber).append("\n");
-            preview.append("Driver: ").append(driverEdit.getText()).append("\n");
+            preview.append("Driver: ").append(driverSpinner.getSelectedItem().toString()).append("\n");
             preview.append("Entry Type: ").append(entryTypeSpinner.getSelectedItem().toString()).append("\n");
             preview.append("Date: ").append(dateEdit.getText()).append("\n\n");
             preview.append("Products:\n");
@@ -524,9 +617,9 @@ public class CreateEntryActivity extends AppCompatActivity {
                     .setNegativeButton("Edit", (dialog, which) -> dialog.dismiss())
                     .show();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            Log.e(TAG, "Error showing preview dialog", e);
+            showErrorDialog("Preview Error", "Failed to show preview. Please try again.");
         }
-
     }
 
     private void setLoading(boolean loading) {
@@ -537,7 +630,7 @@ public class CreateEntryActivity extends AppCompatActivity {
 
             // Disable all input fields while loading
             dateEdit.setEnabled(!loading);
-            driverEdit.setEnabled(!loading);
+            driverSpinner.setEnabled(!loading);
             entryTypeSpinner.setEnabled(!loading);
 
             for (int i = 1; i < productsTable.getChildCount(); i++) {
@@ -546,18 +639,15 @@ public class CreateEntryActivity extends AppCompatActivity {
             }
 
             if (loading) {
-                // Show Snackbar with indefinite duration and prevent further interactions
                 Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content),
                         "Processing...", Snackbar.LENGTH_INDEFINITE);
                 snackbar.show();
 
-                // Disable touch interactions on the Snackbar
                 View snackbarView = snackbar.getView();
                 snackbarView.setClickable(false);
             } else {
-                // Dismiss any existing Snackbar
                 Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "", Snackbar.LENGTH_SHORT);
-                snackbar.show(); // Show a very short Snackbar to dismiss the previous one
+                snackbar.show();
             }
         });
     }
@@ -569,11 +659,12 @@ public class CreateEntryActivity extends AppCompatActivity {
         try {
             WriteBatch batch = db.batch();
             String entryType = entryTypeSpinner.getSelectedItem().toString();
+            String driver = driverSpinner.getSelectedItem().toString();
 
             // Create main entry document
             Map<String, Object> entryData = new HashMap<>();
             entryData.put("controlNumber", currentControlNumber);
-            entryData.put("driver", driverEdit.getText().toString());
+            entryData.put("driver", driver);
             entryData.put("entryType", entryType);
             entryData.put("date", selectedDate.getTimeInMillis());
             entryData.put("year", selectedDate.get(Calendar.YEAR));
@@ -598,6 +689,14 @@ public class CreateEntryActivity extends AppCompatActivity {
                 productData.put("out", out);
                 productData.put("in", in);
                 productData.put("sold", sold);
+                if (entryType.equals("Sales")) {
+                    String rateStr = ((EditText) row.getChildAt(5)).getText().toString();
+                    int rate = TextUtils.isEmpty(rateStr) ? 0 : (int) Float.parseFloat(rateStr);
+                    String valueStr = ((TextView) row.getChildAt(6)).getText().toString();
+                    int value = TextUtils.isEmpty(valueStr) ? 0 : (int) Float.parseFloat(valueStr);
+                    productData.put("rate", rate);
+                    productData.put("value", value);
+                }
                 products.add(productData);
 
                 // Update inventory

@@ -25,10 +25,6 @@
             android:theme="@style/Theme.Dannysim.NoActionBar"
             android:parentActivityName=".StaffDashboardActivity"
             android:exported="false"/>
-
-        <activity
-            android:name=".ProfileActivity"
-            android:exported="false" />
         <activity
             android:name=".ViewStockActivity"
             android:exported="false" />
