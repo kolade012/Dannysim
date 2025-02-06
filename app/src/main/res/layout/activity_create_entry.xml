@@ -143,6 +143,69 @@
             android:text="Add Row"
             android:layout_marginTop="8dp"/>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp"
+            android:padding="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total Amount:"
+                android:layout_marginEnd="8dp"/>
+
+            <TextView
+                android:id="@+id/totalAmountView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="0"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cash:"
+                android:layout_marginEnd="8dp"/>
+
+            <EditText
+                android:id="@+id/cashEditText"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:hint="Enter Cash"
+                android:inputType="number"
+                android:minHeight="48dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Expected Transfer:"
+                android:layout_marginEnd="8dp"/>
+
+            <TextView
+                android:id="@+id/expectedTransferView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="0"/>
+
+        </LinearLayout>
+
         <!-- Save Button -->
         <Button
             android:id="@+id/saveButton"

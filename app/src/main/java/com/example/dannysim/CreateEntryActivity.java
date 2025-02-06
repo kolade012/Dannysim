@@ -1,6 +1,7 @@
 package com.example.dannysim;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
@@ -59,6 +60,9 @@ public class CreateEntryActivity extends AppCompatActivity {
     private Button saveButton;
     private TextView rateHeader;
     private TextView valueHeader;
+    private TextView totalAmountView;
+    private EditText cashEditText;
+    private TextView expectedTransferView;
 
     // Tracking variables
     private int rowCount = 0;
@@ -123,9 +127,26 @@ public class CreateEntryActivity extends AppCompatActivity {
             valueHeader = findViewById(R.id.valueHeader);
             addRowButton = findViewById(R.id.addRowButton);
             saveButton = findViewById(R.id.saveButton);
+            totalAmountView = findViewById(R.id.totalAmountView);
+            cashEditText = findViewById(R.id.cashEditText);
+            expectedTransferView = findViewById(R.id.expectedTransferView);
 
             selectedDate = Calendar.getInstance();
             updateDateDisplay();
+
+            // Add listener for cash input
+            cashEditText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    updateExpectedTransfer();
+                }
+            });
 
             Log.d(TAG, "Views initialized successfully");
         } catch (Exception e) {
@@ -133,43 +154,29 @@ public class CreateEntryActivity extends AppCompatActivity {
             throw e;
         }
 
-        // Initialize validator
         InputValidator validator = new InputValidator(this);
+        boolean isValid = true;
 
-//        // Set up input formatting and validation
-//        driverEdit.addTextChangedListener(new InputFormatWatcher(driverEdit, validator, "driver"));
+        if (!validator.validateDate(dateEdit)) {
+            isValid = false;
+        }
 
-        // Add validation to existing validateInputs() method
-        boolean validateInputs;
-        {
-            boolean isValid = true;
-            validator = new InputValidator(this);
+        for (int i = 1; i < productsTable.getChildCount(); i++) {
+            TableRow row = (TableRow) productsTable.getChildAt(i);
+            EditText outEdit = (EditText) row.getChildAt(2);
+            EditText inEdit = (EditText) row.getChildAt(3);
 
-//            if (!validator.validateDriver(driverEdit)) {
-//                isValid = false;
-//            }
-
-            if (!validator.validateDate(dateEdit)) {
+            if (!validator.validateQuantity(outEdit, "OUT quantity") ||
+                    !validator.validateQuantity(inEdit, "IN quantity")) {
                 isValid = false;
             }
 
-            for (int i = 1; i < productsTable.getChildCount(); i++) {
-                TableRow row = (TableRow) productsTable.getChildAt(i);
-                EditText outEdit = (EditText) row.getChildAt(2);
-                EditText inEdit = (EditText) row.getChildAt(3);
-
-                if (!validator.validateQuantity(outEdit, "OUT quantity") ||
-                        !validator.validateQuantity(inEdit, "IN quantity")) {
-                    isValid = false;
-                }
-
-                // Add quantity watchers to new rows
-                outEdit.addTextChangedListener(new InputFormatWatcher(outEdit, validator, "quantity"));
-                inEdit.addTextChangedListener(new InputFormatWatcher(inEdit, validator, "quantity"));
-            }
-
-            return isValid;
+            // Add quantity watchers to new rows
+            outEdit.addTextChangedListener(new InputFormatWatcher(outEdit, validator, "quantity"));
+            inEdit.addTextChangedListener(new InputFormatWatcher(inEdit, validator, "quantity"));
         }
+
+        return isValid;
     }
 
     private void setupDriverSpinner() {
@@ -501,13 +508,16 @@ public class CreateEntryActivity extends AppCompatActivity {
                     soldText.setText(String.valueOf(soldValue));
 
                     // Calculate and display value
-                    float totalValue = soldValue * rate;
-                    valueText.setText(String.format(Locale.US, "%.2f", totalValue));
+                    int totalValue = (int) (soldValue * rate);
+                    valueText.setText(String.format(Locale.US, "%d", totalValue));
+
+                    // Update total amount
+                    updateTotalAmount();
 
                 } catch (NumberFormatException e) {
                     Log.e(TAG, "Error calculating values", e);
                     soldText.setText("0");
-                    valueText.setText("0.00");
+                    valueText.setText("0");
                 }
             }
         };
@@ -517,30 +527,29 @@ public class CreateEntryActivity extends AppCompatActivity {
         rateEdit.addTextChangedListener(calculateSold);
     }
 
-//    private void calculateSoldValue(EditText outEdit, EditText inEdit, TextView soldText) {
-//        try {
-//            int out = outEdit.getText().toString().isEmpty() ? 0 :
-//                    Integer.parseInt(outEdit.getText().toString());
-//            int in = inEdit.getText().toString().isEmpty() ? 0 :
-//                    Integer.parseInt(inEdit.getText().toString());
-//
-//            String entryType = entryTypeSpinner.getSelectedItem().toString();
-//            int soldValue;
-//
-//            if (entryType.equals("Sales")) {
-//                soldValue = out - in;
-//            } else {
-//                soldValue = Math.abs(out - in);
-//            }
-//
-//            soldText.setText(String.valueOf(soldValue));
-//            Log.d(TAG, String.format("Calculated sold value: %d (out: %d, in: %d, type: %s)",
-//                    soldValue, out, in, entryType));
-//        } catch (NumberFormatException e) {
-//            Log.e(TAG, "Error calculating sold value", e);
-//            soldText.setText("0");
-//        }
-//    }
+    private void updateTotalAmount() {
+        int totalAmount = 0;
+        for (int i = 1; i < productsTable.getChildCount(); i++) {
+            TableRow row = (TableRow) productsTable.getChildAt(i);
+            TextView valueText = (TextView) row.getChildAt(6);
+            try {
+                if (!TextUtils.isEmpty(valueText.getText())) {
+                    totalAmount += Integer.parseInt(String.format("%.0f", Float.parseFloat(valueText.getText().toString())));
+                }
+            } catch (NumberFormatException e) {
+                Log.e(TAG, "Error parsing value", e);
+            }
+        }
+        totalAmountView.setText(String.valueOf(totalAmount));
+        updateExpectedTransfer();
+    }
+
+    private void updateExpectedTransfer() {
+        int totalAmount = Integer.parseInt(totalAmountView.getText().toString());
+        int cash = TextUtils.isEmpty(cashEditText.getText()) ? 0 : Integer.parseInt(cashEditText.getText().toString());
+        int expectedTransfer = totalAmount - cash;
+        expectedTransferView.setText(String.valueOf(expectedTransfer));
+    }
 
     private List<String> getProductsList() {
         return Arrays.asList(
@@ -590,12 +599,15 @@ public class CreateEntryActivity extends AppCompatActivity {
 
         try {
             StringBuilder preview = new StringBuilder();
+
+            // Header information
             preview.append("Control No: ").append(currentControlNumber).append("\n");
             preview.append("Driver: ").append(driverSpinner.getSelectedItem().toString()).append("\n");
             preview.append("Entry Type: ").append(entryTypeSpinner.getSelectedItem().toString()).append("\n");
             preview.append("Date: ").append(dateEdit.getText()).append("\n\n");
-            preview.append("Products:\n");
 
+            // Products section
+            preview.append("Products:\n");
             for (int i = 1; i < productsTable.getChildCount(); i++) {
                 TableRow row = (TableRow) productsTable.getChildAt(i);
                 String sn = ((TextView) row.getChildAt(0)).getText().toString();
@@ -606,6 +618,12 @@ public class CreateEntryActivity extends AppCompatActivity {
                         .append(product).append(" - ")
                         .append(sold).append("\n");
             }
+
+            // Financial summary section
+            preview.append("\nFinancial Summary:\n");
+            preview.append("Total Amount: ₦").append(totalAmountView.getText()).append("\n");
+            preview.append("Cash Received: ₦").append(cashEditText.getText()).append("\n");
+            preview.append("Expected Transfer: ₦").append(expectedTransferView.getText()).append("\n");
 
             new AlertDialog.Builder(this)
                     .setTitle("Preview")
@@ -673,6 +691,8 @@ public class CreateEntryActivity extends AppCompatActivity {
 
             // Create products list
             List<Map<String, Object>> products = new ArrayList<>();
+            double totalSaleAmount = 0;
+
             for (int i = 1; i < productsTable.getChildCount(); i++) {
                 TableRow row = (TableRow) productsTable.getChildAt(i);
                 String product = ((Spinner) row.getChildAt(1)).getSelectedItem().toString();
@@ -696,6 +716,16 @@ public class CreateEntryActivity extends AppCompatActivity {
                     int value = TextUtils.isEmpty(valueStr) ? 0 : (int) Float.parseFloat(valueStr);
                     productData.put("rate", rate);
                     productData.put("value", value);
+                    totalSaleAmount += value;
+
+                    // Create sales document
+                    Map<String, Object> saleData = new HashMap<>();
+                    saleData.put("amount", value);
+                    saleData.put("date", new Date(selectedDate.getTimeInMillis()));
+                    saleData.put("product", product);
+                    saleData.put("quantity", sold);
+                    DocumentReference salesRef = db.collection("sales").document();
+                    batch.set(salesRef, saleData);
                 }
                 products.add(productData);
 
@@ -708,6 +738,17 @@ public class CreateEntryActivity extends AppCompatActivity {
             // Add entry document to batch
             DocumentReference entryRef = db.collection(COLLECTION_ENTRIES).document();
             batch.set(entryRef, entryData);
+
+            // Create order document if it's a sales entry
+            if (entryType.equals("Sales")) {
+                Map<String, Object> orderData = new HashMap<>();
+                orderData.put("date", new Date(selectedDate.getTimeInMillis()));
+                orderData.put("amount", totalSaleAmount);
+                orderData.put("status", "completed");
+                orderData.put("driver", driver);
+                DocumentReference orderRef = db.collection("orders").document();
+                batch.set(orderRef, orderData);
+            }
 
             // Commit the batch
             batch.commit()
@@ -744,13 +785,15 @@ public class CreateEntryActivity extends AppCompatActivity {
     private void updateInventory(WriteBatch batch, String product, int out, int in, String entryType) {
         DocumentReference inventoryRef = db.collection(COLLECTION_INVENTORY).document(product);
 
+        // Calculate quantity change based on entry type
+        long quantityChange;
         if (entryType.equals("Sales")) {
-            // For sales, decrease inventory by sold amount (out - in)
-            batch.update(inventoryRef, "quantity", FieldValue.increment(-(out - in)));
+            quantityChange = -(out - in); // Decrease for sales
         } else {
-            // For stock received, increase inventory by received amount
-            batch.update(inventoryRef, "quantity", FieldValue.increment(in - out));
+            quantityChange = in - out; // Increase for stock received
         }
+
+        batch.update(inventoryRef, "quantity", FieldValue.increment(quantityChange));
     }
 
     private void initializeInventory() {
@@ -788,4 +831,5 @@ public class CreateEntryActivity extends AppCompatActivity {
             });
         }
     }
+
 }

@@ -267,6 +267,8 @@ public class StaffDashboardActivity extends AppCompatActivity
             showChangePasswordDialog();
         } else if (id == R.id.nav_logout) {
             logout();
+        } else if (id == R.id.nav_dashboard_2) {
+            startActivity(new Intent(this, StaffDashboardActivity.class));
         }
 
         drawerLayout.closeDrawer(GravityCompat.START);

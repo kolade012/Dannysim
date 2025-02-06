@@ -17,14 +17,25 @@
         android:theme="@style/Theme.Dannysim"
         tools:targetApi="31">
         <activity
+            android:name=".StaffActivity"
+            android:exported="false" />
+        <activity
+            android:name=".settings"
+            android:exported="false"
+            android:theme="@style/Theme.Dannysim.NoActionBar" />
+        <activity
+            android:name=".reports"
+            android:exported="false"
+            android:theme="@style/Theme.Dannysim.NoActionBar" />
+        <activity
             android:name=".EntryDetailsActivity"
             android:exported="false" />
         <activity
             android:name=".AllEntriesActivity"
+            android:exported="false"
             android:label="All Entries"
-            android:theme="@style/Theme.Dannysim.NoActionBar"
             android:parentActivityName=".StaffDashboardActivity"
-            android:exported="false"/>
+            android:theme="@style/Theme.Dannysim.NoActionBar" />
         <activity
             android:name=".ViewStockActivity"
             android:exported="false" />
@@ -40,7 +51,8 @@
             android:exported="false" />
         <activity
             android:name=".AdminDashboardActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.Dannysim.NoActionBar" />
         <activity
             android:name=".AdminLoginActivity"
             android:exported="false" />
