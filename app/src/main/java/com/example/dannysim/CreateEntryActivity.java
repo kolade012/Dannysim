@@ -183,7 +183,7 @@ public class CreateEntryActivity extends AppCompatActivity {
         Log.d(TAG, "Setting up Driver spinner");
 
         try {
-            List<String> drivers = Arrays.asList("Samuel", "John", "Ugo", "Jude", "Joseph", "Shop Sales", "Madam Stella", "Madam Charity");
+            List<String> drivers = Arrays.asList("Supply", "Samuel", "John", "Ugo", "Jude", "Joseph", "Shop Sales", "Madam Stella", "Madam Charity");
             ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                     android.R.layout.simple_spinner_item, drivers);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

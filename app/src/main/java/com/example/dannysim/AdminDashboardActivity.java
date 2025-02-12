@@ -1,6 +1,7 @@
 package com.example.dannysim;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -28,6 +29,7 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.formatter.LargeValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -48,6 +50,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
+/** @noinspection ALL, deprecation , deprecation , deprecation , deprecation , deprecation , deprecation , deprecation */
 public class AdminDashboardActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -177,8 +180,12 @@ public class AdminDashboardActivity extends AppCompatActivity
     }
 
     private void updateSalesMetrics() {
+        // Get date for 15 days ago to match the image
         Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.MONTH, -6);
+        cal.add(Calendar.DAY_OF_MONTH, -15);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
 
         // Set up real-time listener for sales
         db.collection(COLLECTION_SALES)
@@ -191,40 +198,54 @@ public class AdminDashboardActivity extends AppCompatActivity
                     }
 
                     if (snapshots != null) {
-                        // Using TreeMap to maintain chronological order of daily sales
-                        TreeMap<String, Float> dailySales = new TreeMap<>();
-
-                        for (QueryDocumentSnapshot document : snapshots) {
-                            double amount = document.getDouble("amount") != null ?
-                                    document.getDouble("amount") : 0.0;
-
-                            Calendar salesDate = Calendar.getInstance();
-                            salesDate.setTime(document.getDate("date"));
-                            // Format date as MM/dd/yyyy for daily tracking
-                            String dateKey = String.format(Locale.US, "%02d/%02d/%d",
-                                    salesDate.get(Calendar.MONTH) + 1,
-                                    salesDate.get(Calendar.DAY_OF_MONTH),
-                                    salesDate.get(Calendar.YEAR));
-
-                            dailySales.merge(dateKey, (float)amount, Float::sum);
-                        }
-
-                        updateSalesUI(dailySales);
+                        processDailySales(snapshots);
                     }
                 });
     }
 
-    private void updateSalesUI(TreeMap<String, Float> dailySales) {
-        // Update total sales text for the latest day
-        if (!dailySales.isEmpty()) {
-            String latestDate = dailySales.lastKey();
-            float latestSales = dailySales.get(latestDate);
-            String formattedSales = NumberFormat.getCurrencyInstance(
-                    new Locale("en", "NG")).format(latestSales);
-            totalSalesText.setText(formattedSales);
+    private void processDailySales(QuerySnapshot snapshots) {
+        TreeMap<String, Float> dailySales = new TreeMap<>();
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
+
+        // Initialize last 15 days with zero
+        Calendar initCal = Calendar.getInstance();
+        initCal.add(Calendar.DAY_OF_MONTH, -15);
+        for (int i = 0; i <= 15; i++) {
+            dailySales.put(sdf.format(initCal.getTime()), 0f);
+            initCal.add(Calendar.DAY_OF_MONTH, 1);
         }
 
-        // Update sales chart
+        // Get today's date for filtering today's sales
+        String today = sdf.format(Calendar.getInstance().getTime());
+        float todaySales = 0f;
+
+        // Process sales data
+        for (QueryDocumentSnapshot document : snapshots) {
+            Date saleDate = document.getDate("date");
+            double amount = document.getDouble("amount") != null ?
+                    document.getDouble("amount") : 0.0;
+
+            if (saleDate != null) {
+                String dateKey = sdf.format(saleDate);
+                float currentAmount = dailySales.getOrDefault(dateKey, 0f);
+                dailySales.put(dateKey, currentAmount + (float)amount);
+
+                // Track today's sales separately
+                if (dateKey.equals(today)) {
+                    todaySales += amount;
+                }
+            }
+        }
+
+        updateSalesUI(todaySales, dailySales);
+    }
+
+    private void updateSalesUI(float todaySales, TreeMap<String, Float> dailySales) {
+        // Update total sales text with only today's sales
+        String formattedSales = NumberFormat.getCurrencyInstance(
+                new Locale("en", "NG")).format(todaySales);
+        totalSalesText.setText(formattedSales);
+
         updateSalesChart(dailySales);
     }
 
@@ -233,24 +254,11 @@ public class AdminDashboardActivity extends AppCompatActivity
         List<String> labels = new ArrayList<>();
         int index = 0;
 
-        // Fill in missing days with zero values to ensure continuous line
-        Calendar currentDate = Calendar.getInstance();
-        currentDate.setTime(getFirstDate(dailySales));
-        Calendar endDate = Calendar.getInstance();
-        endDate.setTime(getLastDate(dailySales));
-
-        while (!currentDate.after(endDate)) {
-            String dateKey = String.format(Locale.US, "%02d/%02d/%d",
-                    currentDate.get(Calendar.MONTH) + 1,
-                    currentDate.get(Calendar.DAY_OF_MONTH),
-                    currentDate.get(Calendar.YEAR));
-
-            float value = dailySales.getOrDefault(dateKey, 0f);
-            entries.add(new Entry(index, value));
-            labels.add(dateKey);
-
+        for (Map.Entry<String, Float> entry : dailySales.entrySet()) {
+            entries.add(new Entry(index, entry.getValue()));
+            // Format date to match the image (MM/dd/yyyy)
+            labels.add(entry.getKey());
             index++;
-            currentDate.add(Calendar.DAY_OF_MONTH, 1);
         }
 
         LineDataSet dataSet = new LineDataSet(entries, "Daily Sales");
@@ -259,57 +267,50 @@ public class AdminDashboardActivity extends AppCompatActivity
         LineData lineData = new LineData(dataSet);
         salesChart.setData(lineData);
 
-        // Configure X-axis for daily view
+        // Configure X-axis to match the image
         XAxis xAxis = salesChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
-        xAxis.setLabelRotationAngle(45f); // Angle labels for better readability
-        xAxis.setLabelCount(7); // Show fewer labels to prevent overcrowding
+        xAxis.setLabelRotationAngle(45f);
+        xAxis.setLabelCount(labels.size());
         xAxis.setGranularity(1f);
+        xAxis.setDrawGridLines(true);
+        xAxis.setGridColor(Color.LTGRAY);
 
-        // Enable features for forex-like appearance
+        // Configure Y-axis
+        YAxis leftAxis = salesChart.getAxisLeft();
+        leftAxis.setDrawGridLines(true);
+        leftAxis.setGridColor(Color.LTGRAY);
+        salesChart.getAxisRight().setEnabled(false);
+
         salesChart.setDrawGridBackground(false);
         salesChart.getDescription().setEnabled(false);
         salesChart.setTouchEnabled(true);
         salesChart.setDragEnabled(true);
         salesChart.setScaleEnabled(true);
-        salesChart.setPinchZoom(true);
 
-        salesChart.animateX(1000);
         salesChart.invalidate();
     }
 
+    /** @noinspection deprecation*/
     private void styleLineDataSet(LineDataSet dataSet) {
-        dataSet.setColor(getResources().getColor(R.color.colorPrimary));
-        dataSet.setValueTextColor(getResources().getColor(R.color.colorPrimary));
-        dataSet.setLineWidth(1.5f);
-        dataSet.setDrawCircles(false); // Remove circles for forex-like appearance
-        dataSet.setDrawValues(false); // Hide values for cleaner look
-        dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER); // Smooth curve
-        dataSet.setCubicIntensity(0.2f);
-        dataSet.setDrawFilled(true); // Add gradient fill below line
-        dataSet.setFillAlpha(50);
-        dataSet.setFillColor(getResources().getColor(R.color.colorPrimary));
-    }
-
-    // Helper methods to get first and last dates from the TreeMap
-    private Date getFirstDate(TreeMap<String, Float> dailySales) {
-        try {
-            String firstKey = dailySales.firstKey();
-            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
-            return sdf.parse(firstKey);
-        } catch (ParseException e) {
-            return Calendar.getInstance().getTime();
-        }
-    }
-
-    private Date getLastDate(TreeMap<String, Float> dailySales) {
-        try {
-            String lastKey = dailySales.lastKey();
-            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
-            return sdf.parse(lastKey);
-        } catch (ParseException e) {
-            return Calendar.getInstance().getTime();
-        }
+        int primaryColor = getResources().getColor(R.color.colorPrimary);
+        dataSet.setColor(primaryColor);
+        dataSet.setValueTextColor(primaryColor);
+        dataSet.setLineWidth(2f);
+        dataSet.setDrawCircles(true);  // Show data points like in the image
+        dataSet.setCircleColor(primaryColor);
+        dataSet.setCircleRadius(4f);
+        dataSet.setDrawValues(true);   // Show values like in the image
+        dataSet.setValueTextSize(9f);
+        dataSet.setMode(LineDataSet.Mode.LINEAR);  // Straight lines between points like in image
+        dataSet.setDrawFilled(false);  // No gradient fill like in the image
+        dataSet.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                return String.format(Locale.US, "%.0f", value);  // Show whole numbers like in image
+            }
+        });
     }
 
     private void updateInventoryMetrics() {

@@ -41,6 +41,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+/** @noinspection ALL */
 public class AllEntriesActivity extends AppCompatActivity implements EntriesAdapter.OnEntryClickListener {
     private static final String TAG = "AllEntriesActivity";
     private FirebaseFirestore db;
@@ -397,5 +398,11 @@ public class AllEntriesActivity extends AppCompatActivity implements EntriesAdap
             Log.e(TAG, "Error launching details: " + e.getMessage());
             showError("Error opening entry details");
         }
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }
