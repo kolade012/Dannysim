@@ -91,12 +91,10 @@ public class StaffActivity extends AppCompatActivity implements StaffAdapter.OnS
     }
 
     private void setupOrdersListener() {
-        // Remove any existing listener
         if (ordersListener != null) {
             ordersListener.remove();
         }
 
-        // Set up real-time listener for orders
         ordersListener = db.collection("orders")
                 .whereEqualTo("status", "completed")
                 .addSnapshotListener((snapshots, e) -> {
@@ -107,26 +105,25 @@ public class StaffActivity extends AppCompatActivity implements StaffAdapter.OnS
                     }
 
                     if (snapshots != null && !snapshots.isEmpty()) {
-                        // Create a map to store total metrics for each driver
                         Map<String, PerformanceData> driverMetrics = new HashMap<>();
 
                         // Calculate totals for each driver
                         for (QueryDocumentSnapshot doc : snapshots) {
-                            String driver = doc.getString("driver");
+                            String driverId = doc.getString("driverId"); // Make sure this matches your order document field
                             Double amount = doc.getDouble("amount");
 
-                            if (driver != null && amount != null) {
-                                PerformanceData data = driverMetrics.getOrDefault(driver,
-                                        new PerformanceData());
+                            if (driverId != null && amount != null) {
+                                PerformanceData data = driverMetrics.computeIfAbsent(driverId,
+                                        k -> new PerformanceData());
                                 data.salesCount++;
                                 data.totalSales += amount;
-                                driverMetrics.put(driver, data);
                             }
                         }
 
                         // Update each staff member's performance metrics
                         for (Staff staff : staffList) {
-                            PerformanceData data = driverMetrics.get(staff.getId());
+                            String staffId = staff.getId();
+                            PerformanceData data = driverMetrics.get(staffId);
                             if (data != null) {
                                 updateStaffMetrics(staff, data);
                             }
@@ -135,29 +132,28 @@ public class StaffActivity extends AppCompatActivity implements StaffAdapter.OnS
                 });
     }
 
-
+    // Modify the updateStaffMetrics method:
     private void updateStaffMetrics(Staff staff, PerformanceData data) {
-        Staff.PerformanceMetrics metrics = staff.getPerformanceMetrics();
-        if (metrics == null) {
-            metrics = new Staff.PerformanceMetrics();
-        }
-
-        metrics.setLastActive(Timestamp.now());
-        metrics.setSalesCount(data.salesCount);  // This is correct as is
-        metrics.setTotalSales((int) data.totalSales);  // Convert double to int
-        staff.setPerformanceMetrics(metrics);
-        staff.setLastUpdated(Timestamp.now());
-
         Map<String, Object> updates = new HashMap<>();
-        updates.put("performanceMetrics.lastActive", metrics.getLastActive());
-        updates.put("performanceMetrics.salesCount", metrics.getSalesCount());
-        updates.put("performanceMetrics.totalSales", metrics.getTotalSales());
+        updates.put("performanceMetrics", new HashMap<String, Object>() {{
+            put("lastActive", Timestamp.now());
+            put("salesCount", data.salesCount);
+            put("totalSales", (int)data.totalSales);
+        }});
         updates.put("lastUpdated", Timestamp.now());
 
-        // Update in Firestore using update() instead of set()
         db.collection("staff")
                 .document(staff.getId())
                 .update(updates)
+                .addOnSuccessListener(aVoid -> {
+                    // Update local object to reflect changes
+                    Staff.PerformanceMetrics metrics = new Staff.PerformanceMetrics();
+                    metrics.setLastActive(Timestamp.now());
+//                    metrics.setSalesCount(data.salesCount);
+//                    metrics.setTotalSales((int)data.totalSales);
+                    staff.setPerformanceMetrics(metrics);
+                    staff.setLastUpdated(Timestamp.now());
+                })
                 .addOnFailureListener(e ->
                         Toast.makeText(this, "Error updating metrics: " + e.getMessage(),
                                 Toast.LENGTH_SHORT).show());
@@ -314,8 +310,8 @@ public class StaffActivity extends AppCompatActivity implements StaffAdapter.OnS
 
                         Staff.PerformanceMetrics metrics = new Staff.PerformanceMetrics();
                         metrics.setLastActive(Timestamp.now());
-                        metrics.setSalesCount(0);
-                        metrics.setTotalSales(0);
+//                        metrics.setSalesCount(0);
+//                        metrics.setTotalSales(0);
                         newStaff.setPerformanceMetrics(metrics);
 
                         db.collection("staff")

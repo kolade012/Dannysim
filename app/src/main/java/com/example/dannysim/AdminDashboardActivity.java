@@ -90,9 +90,9 @@ public class AdminDashboardActivity extends AppCompatActivity
         staffText = findViewById(R.id.text_staff);
         salesChart = findViewById(R.id.sales_chart);
         inventoryChart = findViewById(R.id.inventory_chart);
-        topPerformerText = findViewById(R.id.text_top_performer);
-        totalSalesAmountText = findViewById(R.id.text_total_sales_amount);
-        averageSalesText = findViewById(R.id.text_average_sales);
+//        topPerformerText = findViewById(R.id.text_top_performer);
+//        totalSalesAmountText = findViewById(R.id.text_total_sales_amount);
+//        averageSalesText = findViewById(R.id.text_average_sales);
     }
 
     private void setupToolbarAndNavigation() {
@@ -549,11 +549,11 @@ public class AdminDashboardActivity extends AppCompatActivity
 
             // Update TextViews
             staffText.setText(String.format(Locale.getDefault(), "%d Active Staff", staffCount));
-            topPerformerText.setText(String.format("Top Performer: %s", topPerformer));
-            totalSalesAmountText.setText(String.format("Total Sales: %s",
-                    currencyFormat.format(totalSales)));
-            averageSalesText.setText(String.format("Avg Sales per Staff: %s",
-                    currencyFormat.format(averageSales)));
+//            topPerformerText.setText(String.format("Top Performer: %s", topPerformer));
+//            totalSalesAmountText.setText(String.format("Total Sales: %s",
+//                    currencyFormat.format(totalSales)));
+//            averageSalesText.setText(String.format("Avg Sales per Staff: %s",
+//                    currencyFormat.format(averageSales)));
         });
     }
 

@@ -144,69 +144,21 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_columnWeight="1"
-                            android:layout_margin="8dp">
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                android:padding="16dp">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Top Performer"
-                                    android:textStyle="bold"/>
-                                <TextView
-                                    android:id="@+id/text_top_performer"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"/>
-                            </LinearLayout>
-                        </androidx.cardview.widget.CardView>
+                            android:layout_margin="8dp"/>
 
                         <androidx.cardview.widget.CardView
                             android:id="@+id/card_total_sales_amount"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_columnWeight="1"
-                            android:layout_margin="8dp">
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                android:padding="16dp">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Total Sales Amount"
-                                    android:textStyle="bold"/>
-                                <TextView
-                                    android:id="@+id/text_total_sales_amount"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"/>
-                            </LinearLayout>
-                        </androidx.cardview.widget.CardView>
+                            android:layout_margin="8dp"/>
 
                         <androidx.cardview.widget.CardView
                             android:id="@+id/card_average_sales"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_columnWeight="1"
-                            android:layout_margin="8dp">
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                android:padding="16dp">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Average Sales"
-                                    android:textStyle="bold"/>
-                                <TextView
-                                    android:id="@+id/text_average_sales"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"/>
-                            </LinearLayout>
-                        </androidx.cardview.widget.CardView>
+                            android:layout_margin="8dp"/>
                     </GridLayout>
 
                     <!-- Charts -->

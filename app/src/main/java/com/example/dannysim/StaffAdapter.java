@@ -100,20 +100,20 @@ public class StaffAdapter extends RecyclerView.Adapter<StaffAdapter.StaffViewHol
             holder.lastActiveTextView.setText(lastActive);
 
             // Format total sales with thousand separators
-            double totalSales = staff.getPerformanceMetrics().getTotalSales();
-            String formattedSales = currencyFormat.format(totalSales);
+//            double totalSales = staff.getPerformanceMetrics().getTotalSales();
+//            String formattedSales = currencyFormat.format(totalSales);
+//
+//            // Format sales count with thousand separators
+//            int salesCount = staff.getPerformanceMetrics().getSalesCount();
+//            String formattedCount = NumberFormat.getNumberInstance(Locale.getDefault()).format(salesCount);
 
-            // Format sales count with thousand separators
-            int salesCount = staff.getPerformanceMetrics().getSalesCount();
-            String formattedCount = NumberFormat.getNumberInstance(Locale.getDefault()).format(salesCount);
-
-            String salesInfo = String.format("Sales: %s (Total: %s)",
-                    formattedCount,
-                    formattedSales);
-            holder.salesInfoTextView.setText(salesInfo);
-        } else {
-            holder.lastActiveTextView.setText("Last Active: N/A");
-            holder.salesInfoTextView.setText("Sales: 0 (Total: ₦0.00)");
+//            String salesInfo = String.format("Sales: %s (Total: %s)",
+//                    formattedCount,
+//                    formattedSales);
+//            holder.salesInfoTextView.setText(salesInfo);
+//        } else {
+//            holder.lastActiveTextView.setText("Last Active: N/A");
+//            holder.salesInfoTextView.setText("Sales: 0 (Total: ₦0.00)");
         }
 
         // Set click listeners
@@ -159,7 +159,7 @@ public class StaffAdapter extends RecyclerView.Adapter<StaffAdapter.StaffViewHol
             statusTextView = itemView.findViewById(R.id.text_staff_status);
             joinDateTextView = itemView.findViewById(R.id.text_join_date);
             lastActiveTextView = itemView.findViewById(R.id.text_last_active);
-            salesInfoTextView = itemView.findViewById(R.id.text_sales_info);
+            //salesInfoTextView = itemView.findViewById(R.id.text_sales_info);
             editButton = itemView.findViewById(R.id.btn_edit_staff);
             deleteButton = itemView.findViewById(R.id.btn_delete_staff);
             currentMonthSalesView = itemView.findViewById(R.id.text_current_month_sales);

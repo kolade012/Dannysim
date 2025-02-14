@@ -63,8 +63,8 @@ public class Staff {
                     }
 
                     metrics.setLastActive(Timestamp.now());
-                    metrics.setSalesCount(totalCount);
-                    metrics.setTotalSales((int) totalAmount);
+//                    metrics.setSalesCount(totalCount);
+//                    metrics.setTotalSales((int) totalAmount);
                     setPerformanceMetrics(metrics);
 
                     // Create update map
@@ -91,10 +91,10 @@ public class Staff {
         // Getters and Setters
         public Timestamp getLastActive() { return lastActive; }
         public void setLastActive(Timestamp lastActive) { this.lastActive = lastActive; }
-        public int getSalesCount() { return salesCount; }
-        public void setSalesCount(int salesCount) { this.salesCount = salesCount; }
-        public int getTotalSales() { return totalSales; }
-        public void setTotalSales(int totalSales) { this.totalSales = totalSales; }
+//        public int getSalesCount() { return salesCount; }
+//        public void setSalesCount(int salesCount) { this.salesCount = salesCount; }
+//        public int getTotalSales() { return totalSales; }
+//        public void setTotalSales(int totalSales) { this.totalSales = totalSales; }
     }
 
     // Getters and Setters

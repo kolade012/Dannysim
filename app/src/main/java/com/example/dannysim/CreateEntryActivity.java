@@ -77,6 +77,17 @@ public class CreateEntryActivity extends AppCompatActivity {
     private static final String TAG_CONTROL_NUMBER = "ControlNumberManager";
     private static final String COLLECTION_ENTRIES = "entries";
     private static final String COLLECTION_INVENTORY = "inventory";
+    private static final String SUPPLY_DRIVER_ID = "supply_001";
+    private static final Map<String, String> STAFF_IDS = new HashMap<String, String>() {{
+        put("samuel_001", "Samuel");
+        put("john_002", "John");
+        put("ugo_003", "Ugo");
+        put("jude_004", "Jude");
+        put("joseph_005", "Joseph");
+        put("shop_sales_006", "Shop Sales");
+        put("stella_007", "Madam Stella");
+        put("charity_008", "Madam Charity");
+    }};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -183,17 +194,38 @@ public class CreateEntryActivity extends AppCompatActivity {
         Log.d(TAG, "Setting up Driver spinner");
 
         try {
-            List<String> drivers = Arrays.asList("Supply", "Samuel", "John", "Ugo", "Jude", "Joseph", "Shop Sales", "Madam Stella", "Madam Charity");
+            // The spinner will show display names but we'll store IDs
             ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                    android.R.layout.simple_spinner_item, drivers);
+                    android.R.layout.simple_spinner_item);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             driverSpinner.setAdapter(adapter);
 
-            Log.d(TAG, "Entry type spinner setup completed");
+            // Update spinner based on entry type
+            updateDriverSpinnerContent();
+
+            Log.d(TAG, "Driver spinner setup completed");
         } catch (Exception e) {
-            Log.e(TAG, "Error setting up entry type spinner", e);
-            showErrorDialog("Setup Error", "Failed to setup entry types. Please restart the application.");
+            Log.e(TAG, "Error setting up driver spinner", e);
+            showErrorDialog("Setup Error", "Failed to setup drivers. Please restart the application.");
         }
+    }
+
+    // Add this new method to update spinner content
+    private void updateDriverSpinnerContent() {
+        ArrayAdapter<String> adapter = (ArrayAdapter<String>) driverSpinner.getAdapter();
+        adapter.clear();
+
+        String selectedEntryType = entryTypeSpinner.getSelectedItem().toString();
+
+        if ("Stock Received".equals(selectedEntryType)) {
+            adapter.add("Supply");
+        } else {
+            // Add all staff names for sales entries
+            for (String displayName : STAFF_IDS.values()) {
+                adapter.add(displayName);
+            }
+        }
+        adapter.notifyDataSetChanged();
     }
 
     private void setupEntryTypeListener() {
@@ -202,6 +234,9 @@ public class CreateEntryActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selectedType = parent.getItemAtPosition(position).toString();
                 boolean isSales = "Sales".equals(selectedType);
+
+                // Update driver spinner content
+                updateDriverSpinnerContent();
 
                 // Show/hide rate and value columns
                 rateHeader.setVisibility(isSales ? View.VISIBLE : View.GONE);
@@ -677,12 +712,23 @@ public class CreateEntryActivity extends AppCompatActivity {
         try {
             WriteBatch batch = db.batch();
             String entryType = entryTypeSpinner.getSelectedItem().toString();
-            String driver = driverSpinner.getSelectedItem().toString();
+            String selectedDriverName = driverSpinner.getSelectedItem().toString();
+            String driverId;
 
             // Create main entry document
             Map<String, Object> entryData = new HashMap<>();
             entryData.put("controlNumber", currentControlNumber);
-            entryData.put("driver", driver);
+            if ("Supply".equals(entryType)) {
+                driverId = SUPPLY_DRIVER_ID;
+            } else {
+                // Find the ID for the selected driver name
+                driverId = STAFF_IDS.entrySet().stream()
+                        .filter(entry -> entry.getValue().equals(selectedDriverName))
+                        .map(Map.Entry::getKey)
+                        .findFirst()
+                        .orElse("");
+            }
+            entryData.put("driverId", driverId);
             entryData.put("entryType", entryType);
             entryData.put("date", selectedDate.getTimeInMillis());
             entryData.put("year", selectedDate.get(Calendar.YEAR));
@@ -745,7 +791,7 @@ public class CreateEntryActivity extends AppCompatActivity {
                 orderData.put("date", new Date(selectedDate.getTimeInMillis()));
                 orderData.put("amount", totalSaleAmount);
                 orderData.put("status", "completed");
-                orderData.put("driver", driver);
+                orderData.put("driverId", driverId);  // Store ID instead of name
                 DocumentReference orderRef = db.collection("orders").document();
                 batch.set(orderRef, orderData);
             }
