@@ -296,7 +296,7 @@ public class AllEntriesActivity extends AppCompatActivity implements EntriesAdap
             String entryDate = formatDate(createdAtLong);
             int controlNum = getIntValue(doc.getLong("controlNumber"));
             String entryType = getStringValue(doc.getString("entryType"));
-            String driver = getStringValue(doc.getString("driver"));
+            String driver = getStringValue(doc.getString("driverId"));
             List<Product> products = parseProducts(doc.get("products"));
 
             return new Entry(

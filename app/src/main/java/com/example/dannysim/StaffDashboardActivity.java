@@ -180,7 +180,7 @@ public class StaffDashboardActivity extends AppCompatActivity
                                 String entryType = doc.getString("entryType");
                                 if (entryType == null) entryType = "N/A";
 
-                                String driver = doc.getString("driver");
+                                String driver = doc.getString("driverId");
                                 if (driver == null) driver = "N/A";
 
                                 // Process products safely
@@ -227,7 +227,7 @@ public class StaffDashboardActivity extends AppCompatActivity
                             if (entriesAdapter == null) {
                                 entriesAdapter = new EntriesAdapter(entries, entry -> {
                                     try {
-                                        Intent intent = new Intent(StaffDashboardActivity.this, EntryDetailsActivity.class);
+                                        Intent intent = new Intent(StaffDashboardActivity.this, StaffDashboardActivity.class);
                                         intent.putExtra("entry", entry);
                                         startActivity(intent);
                                     } catch (Exception e) {

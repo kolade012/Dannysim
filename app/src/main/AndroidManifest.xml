@@ -29,9 +29,6 @@
             android:exported="false"
             android:theme="@style/Theme.Dannysim.NoActionBar" />
         <activity
-            android:name=".EntryDetailsActivity"
-            android:exported="false" />
-        <activity
             android:name=".AllEntriesActivity"
             android:exported="false"
             android:label="All Entries"

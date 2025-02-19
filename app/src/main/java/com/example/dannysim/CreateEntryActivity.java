@@ -79,14 +79,14 @@ public class CreateEntryActivity extends AppCompatActivity {
     private static final String COLLECTION_INVENTORY = "inventory";
     private static final String SUPPLY_DRIVER_ID = "supply_001";
     private static final Map<String, String> STAFF_IDS = new HashMap<String, String>() {{
-        put("samuel_001", "Samuel");
-        put("john_002", "John");
-        put("ugo_003", "Ugo");
-        put("jude_004", "Jude");
-        put("joseph_005", "Joseph");
-        put("shop_sales_006", "Shop Sales");
-        put("stella_007", "Madam Stella");
-        put("charity_008", "Madam Charity");
+        put("samuel", "Samuel");
+        put("john", "John");
+        put("ugo", "Ugo");
+        put("jude", "Jude");
+        put("joseph", "Joseph");
+        put("shop_sales", "Shop Sales");
+        put("madam_stella", "Madam Stella");
+        put("madam_charity", "Madam Charity");
     }};
 
     @Override
@@ -770,6 +770,7 @@ public class CreateEntryActivity extends AppCompatActivity {
                     saleData.put("date", new Date(selectedDate.getTimeInMillis()));
                     saleData.put("product", product);
                     saleData.put("quantity", sold);
+                    saleData.put("driverId", driverId);
                     DocumentReference salesRef = db.collection("sales").document();
                     batch.set(salesRef, saleData);
                 }

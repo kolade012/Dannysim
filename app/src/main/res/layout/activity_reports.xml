@@ -38,15 +38,17 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Generate Report"
+                        android:text="Sales Report"
                         android:textSize="18sp"
                         android:textStyle="bold"/>
 
-                    <Spinner
-                        android:id="@+id/spinner_report_type"
+                    <AutoCompleteTextView
+                        android:id="@+id/driver_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
+                        android:completionThreshold="1"
+                        android:hint="Select Driver"
                         android:minHeight="48dp" />
 
                     <LinearLayout
@@ -62,6 +64,7 @@
                             android:layout_weight="1"
                             android:clickable="true"
                             android:focusable="false"
+                            android:minHeight="48dp"
                             android:hint="From Date"
                             android:inputType="none"
                             tools:ignore="TouchTargetSizeCheck" />
@@ -73,10 +76,10 @@
                             android:layout_marginStart="8dp"
                             android:layout_weight="1"
                             android:clickable="true"
+                            android:minHeight="48dp"
                             android:focusable="false"
                             android:hint="To Date"
-                            android:inputType="none"
-                            tools:ignore="TouchTargetSizeCheck" />
+                            android:inputType="none"/>
                     </LinearLayout>
 
                     <Button
@@ -85,29 +88,19 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:text="Generate Report"/>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
 
                     <TextView
+                        android:id="@+id/summary_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Recent Reports"
-                        android:textSize="18sp"
-                        android:textStyle="bold"/>
+                        android:layout_marginTop="16dp"
+                        android:text="Sales Summary"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:visibility="gone"/>
 
                     <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recycler_reports"
+                        android:id="@+id/recycler_sales_summary"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"/>
