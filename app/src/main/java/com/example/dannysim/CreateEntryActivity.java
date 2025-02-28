@@ -719,7 +719,7 @@ public class CreateEntryActivity extends AppCompatActivity {
             Map<String, Object> entryData = new HashMap<>();
             entryData.put("controlNumber", currentControlNumber);
             if ("Supply".equals(entryType)) {
-                driverId = SUPPLY_DRIVER_ID;
+                driverId = "supply";
             } else {
                 // Find the ID for the selected driver name
                 driverId = STAFF_IDS.entrySet().stream()
