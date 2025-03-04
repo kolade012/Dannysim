@@ -838,7 +838,7 @@ public class CreateEntryActivity extends AppCompatActivity {
     }
 
     private void updateEmpties(WriteBatch batch, int sold, int supplied, String entryType) {
-        DocumentReference emptiesRef = db.collection("empties").document("01B0qt3S9pg7dLslufLn"); // Assuming you have a fixed ID for the empties document
+        DocumentReference emptiesRef = db.collection("empties").document("DICwrW4hANHOqu7PiEGu"); // Assuming you have a fixed ID for the empties document
 
         db.runTransaction(transaction -> {
             DocumentSnapshot emptiesSnapshot = transaction.get(emptiesRef);
