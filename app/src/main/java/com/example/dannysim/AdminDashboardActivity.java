@@ -7,15 +7,19 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import androidx.annotation.NonNull;
+
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
-import android.os.Handler;
-import android.os.Looper;
-import androidx.lifecycle.LiveData;
 import androidx.drawerlayout.widget.DrawerLayout;
+
+import com.example.dannysim.AllEntriesActivity;
+import com.example.dannysim.StaffActivity;
+import com.example.dannysim.UserTypeActivity;
+import com.example.dannysim.ViewStockActivity;
+import com.example.dannysim.reports;
+import com.example.dannysim.settings;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -39,7 +43,6 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.NumberFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -58,13 +61,14 @@ public class AdminDashboardActivity extends AppCompatActivity
     private static final String COLLECTION_SALES = "sales";
     private static final String COLLECTION_INVENTORY = "inventory";
     private static final String COLLECTION_STAFF = "staff";
+    private static final String COLLECTION_EMPTIES = "empties";
 
     private DrawerLayout drawerLayout;
     private LineChart salesChart;
     private BarChart inventoryChart;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
-    private TextView totalSalesText, inventoryValueText, ordersText, staffText, topPerformerText, totalSalesAmountText, averageSalesText;
+    private TextView totalSalesText, inventoryValueText, ordersText, staffText, emptiesText, topPerformerText, totalSalesAmountText, averageSalesText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +94,7 @@ public class AdminDashboardActivity extends AppCompatActivity
         staffText = findViewById(R.id.text_staff);
         salesChart = findViewById(R.id.sales_chart);
         inventoryChart = findViewById(R.id.inventory_chart);
+        emptiesText = findViewById(R.id.text_empties);
 //        topPerformerText = findViewById(R.id.text_top_performer);
 //        totalSalesAmountText = findViewById(R.id.text_total_sales_amount);
 //        averageSalesText = findViewById(R.id.text_average_sales);
@@ -177,6 +182,32 @@ public class AdminDashboardActivity extends AppCompatActivity
         updateInventoryMetrics();
         updateOrderMetrics();
         updateStaffMetrics();
+        updateEmptiesMetrics();
+    }
+
+    private void updateEmptiesMetrics() {
+        // Set up real-time listener for empties
+        db.collection("empties")
+                .addSnapshotListener((snapshots, e) -> {
+                    if (e != null) {
+                        showError("Failed to listen for order updates: " + e.getMessage());
+                        return;
+                    }
+
+                    if (snapshots != null) {
+                        processEmptiesMetrics(snapshots);
+                    }
+                });
+
+    }
+
+    private void processEmptiesMetrics(QuerySnapshot snapshots) {
+        int emptiesAvailable = 0;
+        for (QueryDocumentSnapshot doc : snapshots) {
+            emptiesAvailable++;
+        }
+        // Update UI with today's completed orders count
+        emptiesText.setText(String.valueOf(emptiesAvailable));
     }
 
     private void updateSalesMetrics() {
